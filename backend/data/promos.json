@@ -1,0 +1,18 @@
+[
+  {
+    "code": "DIN20",
+    "discountPercent": 0.20,
+    "maxDiscount": 100,
+    "description": "20% off on movie tickets for Dindigul region"
+  },
+  {
+    "code": "BMS50",
+    "flatDiscount": 50,
+    "description": "Flat ₹50 discount on movie tickets"
+  },
+  {
+    "code": "SUPERSTAR",
+    "discountPercent": 0.15,
+    "description": "15% off Superstar special voucher"
+  }
+]

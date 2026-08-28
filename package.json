@@ -1,0 +1,19 @@
+{
+  "name": "cinewave-entertainment",
+  "version": "2.0.0",
+  "description": "CineWave / BookMyShow Dindigul - Movie Ticket Booking Management System",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node --watch backend/server.js"
+  },
+  "keywords": [
+    "cinewave",
+    "movie-booking",
+    "pega",
+    "theatre-management",
+    "dindigul"
+  ],
+  "author": "CineWave Entertainment",
+  "license": "ISC"
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "snack-01",
+    "name": "Jumbo Caramel Popcorn",
+    "price": 220,
+    "category": "Popcorn",
+    "veg": true,
+    "description": "Freshly popped gourmet corn with buttery crunchy caramel glaze.",
+    "image": "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=300&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "snack-02",
+    "name": "Nachos Supreme & Cheese",
+    "price": 180,
+    "category": "Appetizer",
+    "veg": true,
+    "description": "Crispy tortilla chips served with melted cheddar sauce & jalapenos.",
+    "image": "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=300&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "snack-03",
+    "name": "Duo Chilled Coke",
+    "price": 140,
+    "category": "Beverage",
+    "veg": true,
+    "description": "2 glasses of ice-cold refreshing Coca-Cola fountain drink.",
+    "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "snack-04",
+    "name": "Dindigul Cold Coffee",
+    "price": 120,
+    "category": "Beverage",
+    "veg": true,
+    "description": "Rich brewed South Indian filter blend topped with vanilla cream.",
+    "image": "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=300&auto=format&fit=crop&q=60"
+  }
+]

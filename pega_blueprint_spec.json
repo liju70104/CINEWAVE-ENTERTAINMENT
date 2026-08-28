@@ -1,0 +1,169 @@
+{
+  "application": {
+    "name": "CineWave Entertainment - BookMyShow Dindigul",
+    "description": "Pega Movie Ticket Booking Management Application configured for BookMyShow Dindigul region, automating movie selection, theatre scheduling, seat validation, Indian Rupee GST pricing, VIP routing, and digital M-Ticket issuance.",
+    "region": "Dindigul, Tamil Nadu, India",
+    "industry": "Media & Entertainment",
+    "caseTypes": [
+      {
+        "name": "Movie Ticket Booking",
+        "class": "CineWave-Work-BookingRequest",
+        "stages": [
+          {
+            "name": "Submission",
+            "type": "Primary",
+            "processes": [
+              {
+                "name": "Capture Ticket Request",
+                "steps": [
+                  {
+                    "name": "Collect Customer Information",
+                    "type": "CollectInformation",
+                    "fields": ["Customer.FullName", "Customer.EmailAddress", "Customer.PhoneNumber", "Customer.MembershipTier"]
+                  },
+                  {
+                    "name": "Select Movie and Dindigul Theatre",
+                    "type": "CollectInformation",
+                    "fields": ["SelectedMovie", "SelectedTheatre", "ShowDate", "ShowTime", "ShowType"]
+                  },
+                  {
+                    "name": "Select Seats and Quantity",
+                    "type": "CollectInformation",
+                    "fields": ["NumberOfTickets", "SeatClass", "SelectedSeatNumbers"]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Validation and Costing",
+            "type": "Primary",
+            "processes": [
+              {
+                "name": "Validate and Price in INR",
+                "steps": [
+                  {
+                    "name": "Check Show Availability",
+                    "type": "Automation",
+                    "rule": "ValidateSeatAvailability"
+                  },
+                  {
+                    "name": "Calculate Booking Cost & GST",
+                    "type": "Automation",
+                    "rule": "CalculateTotalFareDataTransform"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Review and Routing",
+            "type": "Primary",
+            "processes": [
+              {
+                "name": "Show Type Routing",
+                "steps": [
+                  {
+                    "name": "Route by Show Type",
+                    "type": "Decision",
+                    "routing": {
+                      "VIP Premiere": "VIPConciergeQueue@uplus",
+                      "Dolby Atmos 4K": "DolbyLaserQueue@uplus",
+                      "Standard 2D": "SelfServiceAutoApprove"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Customer Confirmation",
+            "type": "Primary",
+            "processes": [
+              {
+                "name": "Confirm and Pay",
+                "steps": [
+                  {
+                    "name": "Review and Confirm Booking",
+                    "type": "CollectInformation",
+                    "sla": {
+                      "goal": "10 minutes",
+                      "deadline": "30 minutes",
+                      "passedDeadline": "Cancel and Release Seats"
+                    }
+                  },
+                  {
+                    "name": "Process Payment and Reserve Seats",
+                    "type": "Automation"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Fulfillment and Notification",
+            "type": "Primary",
+            "processes": [
+              {
+                "name": "Issue M-Ticket and Notify",
+                "steps": [
+                  {
+                    "name": "Generate Booking Reference",
+                    "type": "Automation"
+                  },
+                  {
+                    "name": "Send Confirmation Email and SMS",
+                    "type": "SendEmail",
+                    "template": "BookingConfirmationEmail"
+                  },
+                  {
+                    "name": "Resolve Completed",
+                    "type": "ChangeStage",
+                    "targetStage": "Resolved-Completed"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Cancellation",
+            "type": "Alternate",
+            "processes": [
+              {
+                "name": "Cancel Booking",
+                "steps": [
+                  {
+                    "name": "Release Reserved Seats",
+                    "type": "Automation"
+                  },
+                  {
+                    "name": "Resolve Cancelled",
+                    "type": "ChangeStage",
+                    "targetStage": "Resolved-Cancelled"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "dataObjects": [
+      {
+        "name": "Movie",
+        "class": "CineWave-Data-Movie",
+        "records": ["Amaran", "The Greatest of All Time (GOAT)", "Vettaiyan", "Interstellar 4K"]
+      },
+      {
+        "name": "Theatre",
+        "class": "CineWave-Data-Theatre",
+        "records": [
+          "Umaa Rajendra Cinemas 4K RGB Laser Dolby Atmos, Dindigul",
+          "Aarthi Grand Cineplex A/C 2K Dolby, Dindigul",
+          "Vijay Theatre Barco 4K Dolby 7.1, Dindigul",
+          "J Cinemas 4K Dolby Atmos, Chinnalapatti - Dindigul"
+        ]
+      }
+    ]
+  }
+}

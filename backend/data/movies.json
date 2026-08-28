@@ -1,0 +1,50 @@
+[
+  {
+    "id": "MOV-DGL-01",
+    "title": "Amaran",
+    "genre": "Action / Biography / Drama",
+    "language": "Tamil (2D, Dolby Atmos)",
+    "rating": 9.4,
+    "votes": "128.4K",
+    "duration": 168,
+    "cert": "UA 16+",
+    "poster": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60",
+    "trending": true
+  },
+  {
+    "id": "MOV-DGL-02",
+    "title": "The Greatest of All Time (GOAT)",
+    "genre": "Action / Sci-Fi / Thriller",
+    "language": "Tamil, Telugu",
+    "rating": 8.9,
+    "votes": "95.2K",
+    "duration": 179,
+    "cert": "UA",
+    "poster": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=60",
+    "trending": true
+  },
+  {
+    "id": "MOV-DGL-03",
+    "title": "Vettaiyan",
+    "genre": "Action / Police Drama",
+    "language": "Tamil (Dolby 7.1)",
+    "rating": 8.6,
+    "votes": "81.6K",
+    "duration": 163,
+    "cert": "UA",
+    "poster": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&auto=format&fit=crop&q=60",
+    "trending": false
+  },
+  {
+    "id": "MOV-DGL-04",
+    "title": "Interstellar (Re-Release 4K)",
+    "genre": "Sci-Fi / Adventure",
+    "language": "English (4K RGB Laser)",
+    "rating": 9.6,
+    "votes": "240K",
+    "duration": 169,
+    "cert": "UA",
+    "poster": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&auto=format&fit=crop&q=60",
+    "trending": true
+  }
+]

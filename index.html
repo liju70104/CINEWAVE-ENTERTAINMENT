@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookMyShow Dindigul | Movie Ticket Booking Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bms-theme">
+
+  <!-- ================= AUTH / LOGIN OVERLAY SCREEN ================= -->
+  <div class="login-overlay" id="login-modal">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="bms-logo">
+          <span class="bms-logo-book">book</span>
+          <span class="bms-logo-my">my</span>
+          <span class="bms-logo-show">show</span>
+        </div>
+        <span class="login-loc-tag"><i data-lucide="map-pin"></i> Dindigul Cinemas</span>
+      </div>
+
+      <div class="login-intro">
+        <h2 id="auth-title">Sign In to Your Account</h2>
+        <p id="auth-sub">Enter your credentials to book movie tickets, view M-Tickets, and unlock member discounts.</p>
+      </div>
+
+      <!-- Sign In / Register Mode Switcher -->
+      <div class="auth-tabs-toggle">
+        <button type="button" class="auth-tab-btn active" id="tab-sign-in">
+          <i data-lucide="log-in"></i> Sign In
+        </button>
+        <button type="button" class="auth-tab-btn" id="tab-register">
+          <i data-lucide="user-plus"></i> Create Account
+        </button>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label>Full Name <span class="req">*</span></label>
+          <div class="input-with-icon">
+            <i data-lucide="user"></i>
+            <input type="text" id="login-fullname" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address / Mobile Number <span class="req">*</span></label>
+          <div class="input-with-icon">
+            <i data-lucide="mail"></i>
+            <input type="text" id="login-username" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Password <span class="req">*</span></label>
+          <div class="input-with-icon">
+            <i data-lucide="lock"></i>
+            <input type="password" id="login-password" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Membership Tier</label>
+          <select id="login-role">
+            <option value="Platinum VIP Member">BMS Platinum VIP Member (20% Discount)</option>
+            <option value="Gold Superstar">BMS Gold Superstar (10% Discount)</option>
+            <option value="Silver Member">BMS Silver Member (5% Discount)</option>
+            <option value="Standard Customer">Standard Account (No Discount)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-top: 0.5rem;">
+          <label class="checkbox-label" style="font-size: 0.8rem; color: var(--text-secondary);">
+            <input type="checkbox" id="chk-remember-user" checked />
+            <span>Remember my login credentials on this device</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-bms btn-block" id="btn-login-submit">
+          <span id="btn-login-text">Sign In & Continue Booking</span>
+          <i data-lucide="arrow-right"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- BookMyShow Top Navigation Bar -->
+  <header class="bms-header">
+    <div class="bms-header-inner">
+      <div class="bms-brand-zone">
+        <div class="bms-logo">
+          <span class="bms-logo-book">book</span>
+          <span class="bms-logo-my">my</span>
+          <span class="bms-logo-show">show</span>
+        </div>
+        <div class="bms-search-bar">
+          <i data-lucide="search"></i>
+          <input type="text" id="header-search" />
+        </div>
+      </div>
+
+      <div class="bms-header-right">
+        <!-- Theme Switcher Toggle Button -->
+        <div class="theme-switch-wrapper">
+          <button type="button" class="btn-theme-toggle" id="btn-theme-toggle" title="Switch Theme (Dark Cinema / Light Velvet / IMAX Cyber Gold)">
+            <div class="theme-icon-box" id="theme-icon-box">
+              <i data-lucide="moon"></i>
+            </div>
+            <span class="theme-name-tag" id="theme-name-tag">Dark Cinema</span>
+          </button>
+        </div>
+
+        <!-- City Selector -->
+        <div class="bms-location-badge">
+          <i data-lucide="map-pin"></i>
+          <span class="city-name" id="current-city">Dindigul</span>
+          <i data-lucide="chevron-down" class="chev-icon"></i>
+        </div>
+
+        <div class="bms-member-badge">
+          <i data-lucide="crown"></i>
+          <span id="header-role-badge">Platinum VIP</span>
+        </div>
+
+        <!-- User Profile Widget with Logout -->
+        <div class="bms-user-profile" id="user-profile-widget">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop&q=60" alt="Avatar" class="bms-avatar"/>
+          <div class="user-name-col">
+            <span class="u-name" id="header-user-name">User</span>
+            <span class="u-role" id="header-user-id">Account</span>
+          </div>
+          <button type="button" class="btn-logout" id="btn-logout" title="Sign Out / Switch Account">
+            <i data-lucide="log-out"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Secondary Category Subnav with Application Views -->
+    <nav class="bms-subnav">
+      <div class="bms-subnav-inner">
+        <div class="nav-links-left">
+          <button type="button" class="nav-tab-btn active" data-view="booking">
+            <i data-lucide="film"></i> Book Tickets
+          </button>
+          <button type="button" class="nav-tab-btn" data-view="wallet">
+            <i data-lucide="ticket"></i> My Bookings <span class="tab-badge" id="wallet-count-badge">2</span>
+          </button>
+          <button type="button" class="nav-tab-btn" data-view="concessions">
+            <i data-lucide="popcorn"></i> F&B Concessions
+          </button>
+          <button type="button" class="nav-tab-btn" data-view="manager">
+            <i data-lucide="shield-check"></i> Gate Scanner & Console
+          </button>
+        </div>
+        <div class="nav-links-right">
+          <span class="case-chip">Order Ref: <strong id="case-id-display">BMS-DGL-9281</strong></span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Container -->
+  <main class="bms-main-container">
+    
+    <!-- ================= VIEW 1: MOVIE BOOKING WORKFLOW ================= -->
+    <div id="view-booking" class="app-view">
+      
+      <!-- Movie Booking Step Tracker Bar -->
+      <section class="stage-tracker-card">
+        <div class="stages-header">
+          <div class="stages-title-group">
+            <i data-lucide="clapperboard" class="movie-icon"></i>
+            <h3>Movie Ticket Booking Progress</h3>
+          </div>
+          <span class="status-pill" id="case-status-badge">Step 1: Select Movie & Seats</span>
+        </div>
+        
+        <div class="stage-flow">
+          <div class="stage-node active" id="stage-1-node">
+            <div class="node-circle">1</div>
+            <div class="node-content">
+              <span class="node-title">1. Movie & Seats</span>
+              <span class="node-sub">Selection</span>
+            </div>
+          </div>
+          <div class="stage-line" id="line-1"></div>
+          <div class="stage-node" id="stage-2-node">
+            <div class="node-circle">2</div>
+            <div class="node-content">
+              <span class="node-title">2. Price Breakdown</span>
+              <span class="node-sub">Fare & GST</span>
+            </div>
+          </div>
+          <div class="stage-line" id="line-2"></div>
+          <div class="stage-node" id="stage-3-node">
+            <div class="node-circle">3</div>
+            <div class="node-content">
+              <span class="node-title">3. Experience & Perks</span>
+              <span class="node-sub">Format & F&B</span>
+            </div>
+          </div>
+          <div class="stage-line" id="line-3"></div>
+          <div class="stage-node" id="stage-4-node">
+            <div class="node-circle">4</div>
+            <div class="node-content">
+              <span class="node-title">4. Review & Pay</span>
+              <span class="node-sub">Razorpay Hold</span>
+            </div>
+          </div>
+          <div class="stage-line" id="line-4"></div>
+          <div class="stage-node" id="stage-5-node">
+            <div class="node-circle">5</div>
+            <div class="node-content">
+              <span class="node-title">5. M-Ticket</span>
+              <span class="node-sub">Confirmed</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Workspace Layout -->
+      <div class="bms-layout-single">
+        
+        <!-- ================= STEP 1: MOVIE & SEAT SELECTION ================= -->
+        <div class="bms-card" id="step-1-card">
+          
+          <!-- Movie Banner -->
+          <div class="dgl-header-banner">
+            <div class="dgl-badge-row">
+              <span class="city-pill"><i data-lucide="map-pin"></i> In Cinemas in Dindigul</span>
+              <span class="story-tag"><i data-lucide="sparkles"></i> Trending Tamil & Blockbuster Releases</span>
+            </div>
+            <h2>Now Showing in Dindigul</h2>
+            <p>Select your movie, Dindigul theatre screen, preferred showtime slot, and seats.</p>
+          </div>
+
+          <!-- Movie Cards Grid -->
+          <div class="bms-movie-grid">
+            <div class="movie-card selected" data-movie-id="MOV-DGL-01" data-title="Amaran" data-genre="Action / Biography / Drama" data-lang="Tamil (2D, Dolby Atmos)" data-rating="9.4" data-votes="128.4K" data-img="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60">
+              <div class="movie-poster-wrap">
+                <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60" alt="Amaran" class="movie-img"/>
+                <div class="rating-strip"><i data-lucide="star"></i> 9.4/10 <span>(128K Votes)</span></div>
+                <span class="cert-tag">UA 16+</span>
+              </div>
+              <h4 class="movie-name">Amaran</h4>
+              <span class="movie-meta">Tamil • Action/Drama</span>
+            </div>
+
+            <div class="movie-card" data-movie-id="MOV-DGL-02" data-title="The Greatest of All Time (GOAT)" data-genre="Action / Sci-Fi / Thriller" data-lang="Tamil, Telugu" data-rating="8.9" data-votes="95.2K" data-img="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=60">
+              <div class="movie-poster-wrap">
+                <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=60" alt="GOAT" class="movie-img"/>
+                <div class="rating-strip"><i data-lucide="star"></i> 8.9/10 <span>(95K Votes)</span></div>
+                <span class="cert-tag">UA</span>
+              </div>
+              <h4 class="movie-name">GOAT - The Greatest Of All Time</h4>
+              <span class="movie-meta">Tamil • Sci-Fi Action</span>
+            </div>
+
+            <div class="movie-card" data-movie-id="MOV-DGL-03" data-title="Vettaiyan" data-genre="Action / Police Drama" data-lang="Tamil (Dolby 7.1)" data-rating="8.6" data-votes="81.6K" data-img="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&auto=format&fit=crop&q=60">
+              <div class="movie-poster-wrap">
+                <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&auto=format&fit=crop&q=60" alt="Vettaiyan" class="movie-img"/>
+                <div class="rating-strip"><i data-lucide="star"></i> 8.6/10 <span>(81K Votes)</span></div>
+                <span class="cert-tag">UA</span>
+              </div>
+              <h4 class="movie-name">Vettaiyan</h4>
+              <span class="movie-meta">Tamil • Action Thriller</span>
+            </div>
+
+            <div class="movie-card" data-movie-id="MOV-DGL-04" data-title="Interstellar (Re-Release 4K)" data-genre="Sci-Fi / Adventure" data-lang="English (4K RGB Laser)" data-rating="9.6" data-votes="240K" data-img="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&auto=format&fit=crop&q=60">
+              <div class="movie-poster-wrap">
+                <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&auto=format&fit=crop&q=60" alt="Interstellar" class="movie-img"/>
+                <div class="rating-strip"><i data-lucide="star"></i> 9.6/10 <span>(240K Votes)</span></div>
+                <span class="cert-tag">UA</span>
+              </div>
+              <h4 class="movie-name">Interstellar (4K Laser)</h4>
+              <span class="movie-meta">English • Sci-Fi Masterpiece</span>
+            </div>
+          </div>
+
+          <!-- Main Booking Form -->
+          <form id="ticket-request-form">
+            
+            <!-- Customer Information Section -->
+            <div class="form-section">
+              <h4 class="section-title"><i data-lucide="user-check"></i> Customer Contact & Rewards</h4>
+              <div class="grid-3">
+                <div class="form-group">
+                  <label>Full Name <span class="req">*</span></label>
+                  <input type="text" id="cust-name" required />
+                </div>
+                <div class="form-group">
+                  <label>Email Address (for M-Ticket) <span class="req">*</span></label>
+                  <input type="email" id="cust-email" required />
+                </div>
+                <div class="form-group">
+                  <label>Mobile Number <span class="req">*</span></label>
+                  <input type="tel" id="cust-phone" required />
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>BookMyShow Rewards Tier</label>
+                  <select id="cust-tier">
+                    <option value="Regular">Regular (Standard Pricing)</option>
+                    <option value="Silver">BMS Silver (5% Discount)</option>
+                    <option value="Gold">BMS Gold Superstar (10% Discount)</option>
+                    <option value="Platinum" selected>BMS Platinum VIP (20% Discount + Priority Lounge)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Selected Movie</label>
+                  <input type="text" id="selected-movie-name" readonly value="Amaran" class="readonly-input" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Dindigul Theatres & Showtime Selection -->
+            <div class="form-section">
+              <h4 class="section-title"><i data-lucide="building"></i> Dindigul Cinema Theatres & Screen Format</h4>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Select Theatre in Dindigul <span class="req">*</span></label>
+                  <select id="theatre-select" required>
+                    <option value="TH-DGL-01" data-loc="Canara Colony, Dindigul">Umaa Rajendra Cinemas 4K RGB Laser Dolby Atmos, Dindigul</option>
+                    <option value="TH-DGL-02" data-loc="Aarthi Road, Dindigul">Aarthi Grand Cineplex A/C 2K Dolby, Dindigul</option>
+                    <option value="TH-DGL-03" data-loc="Natham Road, Dindigul">Vijay Theatre Barco 4K Dolby 7.1, Dindigul</option>
+                    <option value="TH-DGL-04" data-loc="Chinnalapatti, Dindigul">J Cinemas 4K Dolby Atmos, Chinnalapatti</option>
+                    <option value="TH-DGL-05" data-loc="Palani Road, Dindigul">Carnival Rajendra Screen 2, Dindigul</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Experience / Screen Sound Format <span class="req">*</span></label>
+                  <select id="show-type" required>
+                    <option value="Standard 2D" data-base="150">Standard 2D (₹150)</option>
+                    <option value="Dolby Atmos 4K" data-base="190" selected>4K RGB Laser Dolby Atmos (₹190)</option>
+                    <option value="VIP Premiere" data-base="250">VIP Balcony & Recliner Lounge (₹250)</option>
+                    <option value="3D Atmos" data-base="200">RealD 3D Dolby Atmos (₹200)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Date of Show <span class="req">*</span></label>
+                  <input type="date" id="show-date" required />
+                </div>
+                <div class="form-group">
+                  <label>Show Timing Slot (Dindigul Daily Schedule) <span class="req">*</span></label>
+                  <div class="showtime-pills">
+                    <label class="time-pill">
+                      <input type="radio" name="showtime_radio" value="10:30 AM" />
+                      <span>10:30 AM <small class="text-green">Available</small></span>
+                    </label>
+                    <label class="time-pill">
+                      <input type="radio" name="showtime_radio" value="02:00 PM" />
+                      <span>02:00 PM <small class="text-green">Available</small></span>
+                    </label>
+                    <label class="time-pill active">
+                      <input type="radio" name="showtime_radio" value="06:30 PM" checked />
+                      <span>06:30 PM <small class="text-amber">Fast Filling</small></span>
+                    </label>
+                    <label class="time-pill">
+                      <input type="radio" name="showtime_radio" value="09:45 PM" />
+                      <span>09:45 PM <small class="text-green">Available</small></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Seat Selection & Capacity -->
+            <div class="form-section">
+              <div class="flex-between">
+                <h4 class="section-title"><i data-lucide="armchair"></i> Select Seating Category & Seats</h4>
+                <span class="live-inventory" id="live-inventory-tag">Available Seats: <strong>52 / 60</strong></span>
+              </div>
+              
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Number of Tickets (Max 10 per booking) <span class="req">*</span></label>
+                  <input type="number" id="ticket-qty" min="1" max="10" value="2" required />
+                </div>
+                <div class="form-group">
+                  <label>Seating Tier</label>
+                  <select id="seat-tier">
+                    <option value="SILVER">SILVER CLASS (₹120 / Front Rows A-C)</option>
+                    <option value="GOLD" selected>GOLD FIRST CLASS (₹150 / Rows D-G)</option>
+                    <option value="BALCONY">BALCONY / DIAMOND (₹190 / Rows H-J)</option>
+                    <option value="RECLINER">VIP RECLINER SOFA (₹250 / Row K)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Seat Layout -->
+              <div class="bms-seat-layout">
+                <div class="cinema-screen">
+                  <div class="screen-curve"></div>
+                  <span>ALL EYES THIS WAY • SCREEN</span>
+                </div>
+
+                <div class="seat-matrix-wrapper">
+                  <div class="seat-matrix" id="seat-grid">
+                    <!-- Populated by JS -->
+                  </div>
+                </div>
+
+                <div class="seat-legend">
+                  <span><span class="seat-sample available"></span> Available</span>
+                  <span><span class="seat-sample selected"></span> Selected</span>
+                  <span><span class="seat-sample occupied"></span> Sold Out</span>
+                </div>
+              </div>
+
+              <div id="validation-alert" class="alert-box error hidden">
+                <i data-lucide="alert-circle"></i>
+                <span id="validation-alert-msg">Validation Error</span>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="btn-reset">Reset</button>
+              <button type="submit" class="btn btn-bms" id="btn-submit-step1">
+                <span>Book Tickets & Check Fare</span>
+                <i data-lucide="arrow-right"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ================= STEP 2: PRICE & TAX BREAKDOWN ================= -->
+        <div class="bms-card hidden" id="step-2-card">
+          <div class="card-head">
+            <div class="head-info">
+              <span class="step-num">Step 2: Pricing & Availability</span>
+              <h2>Booking Cost Breakdown</h2>
+              <p>Verified seating capacity, itemized GST charges, promo discounts, and loyalty reward savings.</p>
+            </div>
+            <span class="badge badge-green"><i data-lucide="check-check"></i> Available & Verified</span>
+          </div>
+
+          <div class="audit-summary-box success">
+            <div class="validation-status-row">
+              <i data-lucide="check-circle-2"></i>
+              <div>
+                <strong>Auditorium Capacity Verified:</strong>
+                <p id="calc-avail-text">Requested 2 tickets verified against 52 available seats in Umaa Rajendra Cinemas Screen 1.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Promo / Voucher Code Box -->
+          <div class="promo-code-container">
+            <div class="promo-title">
+              <i data-lucide="tag"></i> Apply Promo Code or Movie Voucher
+            </div>
+            <div class="promo-input-group">
+              <input type="text" id="promo-code-input" />
+              <button type="button" class="btn btn-bms btn-apply-promo" id="btn-apply-promo">Apply Code</button>
+            </div>
+            <div class="promo-pills-row">
+              <span class="quick-promo-pill" data-code="DIN20">⚡ DIN20 (20% OFF)</span>
+              <span class="quick-promo-pill" data-code="BMS50">⚡ BMS50 (₹50 OFF)</span>
+              <span class="quick-promo-pill" data-code="SUPERSTAR">⚡ SUPERSTAR (15% OFF)</span>
+            </div>
+            <div id="promo-msg" class="promo-applied-msg hidden">
+              <i data-lucide="check-circle-2"></i> <span id="promo-msg-text">Promo applied!</span>
+            </div>
+          </div>
+
+          <!-- Fare Breakdown Card in INR (₹) -->
+          <div class="bms-fare-card">
+            <div class="fare-header">
+              <i data-lucide="receipt"></i>
+              <h3>Detailed Fare Breakdown</h3>
+            </div>
+
+            <div class="fare-item">
+              <div class="fare-label">
+                <strong>Base Ticket Price</strong>
+                <span id="calc-show-type">4K RGB Laser Dolby Atmos (₹190.00 each)</span>
+              </div>
+              <span class="fare-val" id="calc-unit-price">₹190.00</span>
+            </div>
+
+            <div class="fare-item">
+              <div class="fare-label">
+                <strong>Subtotal (<span id="calc-qty">2</span> Tickets)</strong>
+                <span>Base price &times; ticket quantity</span>
+              </div>
+              <span class="fare-val" id="calc-subtotal">₹380.00</span>
+            </div>
+
+            <div class="fare-item">
+              <div class="fare-label">
+                <strong>Convenience & Booking Fee (10%)</strong>
+                <span>Online ticketing and theatre management services</span>
+              </div>
+              <span class="fare-val" id="calc-fee">+₹38.00</span>
+            </div>
+
+            <div class="fare-item">
+              <div class="fare-label">
+                <strong>Integrated GST (18% on Booking Fee)</strong>
+                <span>Applicable Goods and Services Tax</span>
+              </div>
+              <span class="fare-val" id="calc-tax">+₹6.84</span>
+            </div>
+
+            <div class="fare-item discount" id="discount-row">
+              <div class="fare-label">
+                <strong class="text-green"><i data-lucide="tag"></i> BMS Loyalty Reward (<span id="calc-tier-name">Platinum VIP 20%</span>)</strong>
+                <span>Member discount applied</span>
+              </div>
+              <span class="fare-val text-green" id="calc-discount">-₹76.00</span>
+            </div>
+
+            <div class="fare-item discount hidden" id="promo-discount-row">
+              <div class="fare-label">
+                <strong class="text-green"><i data-lucide="sparkles"></i> Coupon Promo Discount (<span id="calc-promo-code-name">DIN20</span>)</strong>
+                <span>Voucher discount applied</span>
+              </div>
+              <span class="fare-val text-green" id="calc-promo-discount">-₹0.00</span>
+            </div>
+
+            <hr class="fare-divider"/>
+
+            <div class="fare-item total">
+              <div class="fare-label">
+                <strong>Total Amount Payable</strong>
+                <span>Inclusive of all taxes & cinema surcharges</span>
+              </div>
+              <span class="fare-val total-price" id="calc-total">₹348.84</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="btn-back-step2">
+              <i data-lucide="arrow-left"></i> Change Selection
+            </button>
+            <button type="button" class="btn btn-bms" id="btn-proceed-step3">
+              <span>Continue to Experience & F&B</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= STEP 3: EXPERIENCE & CONCESSIONS PERKS ================= -->
+        <div class="bms-card hidden" id="step-3-card">
+          <div class="card-head">
+            <div class="head-info">
+              <span class="step-num">Step 3: Screening Perks & Concessions</span>
+              <h2>Cinema Experience & Concessions</h2>
+              <p>Auditorium sound configuration, recliner lounge access, and pre-book cinema snacks.</p>
+            </div>
+            <span class="badge badge-blue"><i data-lucide="sparkles"></i> Sound & Seating</span>
+          </div>
+
+          <div class="routing-decision-box" id="routing-box">
+            <div class="route-header">
+              <div class="route-icon" id="route-icon"><i data-lucide="volume-2"></i></div>
+              <div>
+                <h4 id="route-headline">Screening Configuration</h4>
+                <p id="route-desc">Your show details and allocated auditorium services.</p>
+              </div>
+            </div>
+            <div class="route-details-card" id="route-details">
+              <!-- Filled via JS -->
+            </div>
+          </div>
+
+          <!-- Snack Bar / Concessions Add-on Section -->
+          <div class="form-section">
+            <div class="flex-between">
+              <h4 class="section-title"><i data-lucide="popcorn"></i> Pre-Order Snacks & Beverages (Delivered to Seat)</h4>
+              <span class="badge badge-orange"><i data-lucide="truck"></i> In-Seat Delivery</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1rem;">
+              Skip the interval queue! Hot snacks and drinks will be served directly at your booked seat.
+            </p>
+
+            <div class="concessions-grid">
+              <div class="snack-card" data-item-id="snack-01" data-price="220" data-name="Jumbo Caramel Popcorn">
+                <div class="snack-img-wrap">
+                  <img src="https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=300&auto=format&fit=crop&q=60" alt="Caramel Popcorn" class="snack-img"/>
+                  <span class="snack-tag veg">Veg</span>
+                </div>
+                <div class="snack-info">
+                  <h4>Jumbo Caramel Popcorn</h4>
+                  <p>Freshly popped gourmet corn with buttery crunchy caramel glaze.</p>
+                  <div class="snack-footer">
+                    <span class="snack-price">₹220</span>
+                    <div class="qty-counter">
+                      <button type="button" class="btn-qty btn-dec">-</button>
+                      <span class="qty-val" id="qty-snack-01">0</span>
+                      <button type="button" class="btn-qty btn-inc">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="snack-card" data-item-id="snack-02" data-price="180" data-name="Nachos Supreme with Warm Cheese">
+                <div class="snack-img-wrap">
+                  <img src="https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=300&auto=format&fit=crop&q=60" alt="Nachos" class="snack-img"/>
+                  <span class="snack-tag veg">Veg</span>
+                </div>
+                <div class="snack-info">
+                  <h4>Nachos Supreme & Cheese</h4>
+                  <p>Crispy tortilla chips served with melted cheddar sauce & jalapenos.</p>
+                  <div class="snack-footer">
+                    <span class="snack-price">₹180</span>
+                    <div class="qty-counter">
+                      <button type="button" class="btn-qty btn-dec">-</button>
+                      <span class="qty-val" id="qty-snack-02">0</span>
+                      <button type="button" class="btn-qty btn-inc">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="snack-card" data-item-id="snack-03" data-price="140" data-name="Duo Chilled Coke (500ml x 2)">
+                <div class="snack-img-wrap">
+                  <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&auto=format&fit=crop&q=60" alt="Coke" class="snack-img"/>
+                  <span class="snack-tag veg">Beverage</span>
+                </div>
+                <div class="snack-info">
+                  <h4>Duo Chilled Coke (Twin Pack)</h4>
+                  <p>2 glasses of ice-cold refreshing Coca-Cola fountain drink.</p>
+                  <div class="snack-footer">
+                    <span class="snack-price">₹140</span>
+                    <div class="qty-counter">
+                      <button type="button" class="btn-qty btn-dec">-</button>
+                      <span class="qty-val" id="qty-snack-03">0</span>
+                      <button type="button" class="btn-qty btn-inc">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="snack-card" data-item-id="snack-04" data-price="120" data-name="Dindigul Special Cold Coffee">
+                <div class="snack-img-wrap">
+                  <img src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=300&auto=format&fit=crop&q=60" alt="Coffee" class="snack-img"/>
+                  <span class="snack-tag veg">Beverage</span>
+                </div>
+                <div class="snack-info">
+                  <h4>Dindigul Iced Cold Coffee</h4>
+                  <p>Rich brewed South Indian filter blend topped with vanilla cream.</p>
+                  <div class="snack-footer">
+                    <span class="snack-price">₹120</span>
+                    <div class="qty-counter">
+                      <button type="button" class="btn-qty btn-dec">-</button>
+                      <span class="qty-val" id="qty-snack-04">0</span>
+                      <button type="button" class="btn-qty btn-inc">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div id="concessions-summary-bar" class="audit-summary-box hidden" style="margin-bottom: 0;">
+              <div class="validation-status-row">
+                <i data-lucide="shopping-bag"></i>
+                <div>
+                  <strong>Selected Snacks Added:</strong>
+                  <p id="concessions-summary-text">No snacks added yet.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="btn-back-step3">
+              <i data-lucide="arrow-left"></i> Back
+            </button>
+            <button type="button" class="btn btn-bms" id="btn-proceed-step4">
+              <span>Proceed to Review & Razorpay</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= STEP 4: REVIEW & PAYMENT ================= -->
+        <div class="bms-card hidden" id="step-4-card">
+          <div class="card-head">
+            <div class="head-info">
+              <span class="step-num">Step 4: Confirmation & Razorpay Payment</span>
+              <h2>Review Booking Summary</h2>
+              <p>Your seats are temporarily held. Complete payment via Razorpay before the timer expires.</p>
+            </div>
+            <span class="badge badge-orange"><i data-lucide="clock"></i> Seat Hold Active</span>
+          </div>
+
+          <!-- Live Seat Hold Timer Bar -->
+          <div class="sla-timer-card">
+            <div class="sla-info">
+              <div class="sla-label-group">
+                <i data-lucide="timer" class="pulse-icon"></i>
+                <div>
+                  <strong>Seat Reservation Hold Timer</strong>
+                  <span>Seats are locked for 10 minutes to complete your transaction</span>
+                </div>
+              </div>
+              <div class="sla-countdown">
+                <span class="countdown-val" id="sla-countdown-text">09:59</span>
+                <span class="countdown-sub">Hold Time Remaining</span>
+              </div>
+            </div>
+            <div class="sla-progress-bar">
+              <div class="sla-fill" id="sla-bar-fill" style="width: 85%;"></div>
+            </div>
+          </div>
+
+          <!-- Booking Summary -->
+          <div class="confirmation-review-grid">
+            <div class="review-block">
+              <h4><i data-lucide="film"></i> Movie & Cinema Details</h4>
+              <p><strong>Movie:</strong> <span id="rev-movie">Amaran</span></p>
+              <p><strong>Cinema:</strong> <span id="rev-theatre">Umaa Rajendra Cinemas, Dindigul</span></p>
+              <p><strong>Date & Showtime:</strong> <span id="rev-datetime">Today at 06:30 PM</span></p>
+              <p><strong>Format:</strong> <span id="rev-type">4K RGB Laser Dolby Atmos</span></p>
+              <p><strong>Seats Booked:</strong> <span id="rev-seats" class="accent-seat">E5, E6 (2 Tickets)</span></p>
+              <p><strong>Add-on Snacks:</strong> <span id="rev-snacks" style="color: #93c5fd;">None</span></p>
+            </div>
+            <div class="review-block">
+              <h4><i data-lucide="user"></i> Customer & Payment Summary</h4>
+              <p><strong>Name:</strong> <span id="rev-name">User</span></p>
+              <p><strong>Email:</strong> <span id="rev-email">user@example.com</span></p>
+              <p><strong>Mobile:</strong> <span id="rev-phone">+91 98421 78901</span></p>
+              <p><strong>Discount / Promo:</strong> <span id="rev-discount-total" style="color: var(--accent-green);">Loyalty 20% Applied</span></p>
+              <p><strong>Total Amount:</strong> <span class="accent-price" id="rev-total">₹348.84</span></p>
+            </div>
+          </div>
+
+          <div class="terms-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="chk-policy" checked />
+              <span>I acknowledge the BookMyShow Dindigul cinema terms & agree to receive SMS/WhatsApp M-Ticket updates.</span>
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-danger" id="btn-cancel-booking">
+              <i data-lucide="x-circle"></i> Cancel Booking
+            </button>
+            <button type="button" class="btn btn-bms" id="btn-open-razorpay" style="background: #0c83ff; box-shadow: 0 4px 16px rgba(12, 131, 255, 0.45);">
+              <i data-lucide="shield-check"></i> Pay ₹<span id="btn-pay-amount">348.84</span> via Razorpay
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= STEP 5: M-TICKET CONFIRMATION ================= -->
+        <div class="bms-card hidden" id="step-5-card">
+          <div class="card-head">
+            <div class="head-info">
+              <span class="step-num">Step 5: Booking Confirmed</span>
+              <h2>Your Digital M-Ticket is Ready!</h2>
+              <p>A confirmation email and SMS with the QR code have been dispatched.</p>
+            </div>
+            <span class="badge badge-green"><i data-lucide="check-circle-2"></i> Booking Confirmed</span>
+          </div>
+
+          <!-- Digital BookMyShow M-Ticket -->
+          <div class="bms-m-ticket" id="ticket-pass-element">
+            <div class="ticket-top-banner">
+              <div class="bms-tkt-logo">book<span>my</span>show</div>
+              <span class="tkt-badge-city">DINDIGUL MULTIPLEX</span>
+            </div>
+
+            <div class="ticket-body">
+              <div class="tkt-info-left">
+                <h1 class="tkt-movie-title" id="tkt-movie">Amaran</h1>
+                <span class="tkt-lang-badge" id="tkt-type">TAMIL • 4K RGB LASER DOLBY ATMOS</span>
+                
+                <div class="tkt-grid-details">
+                  <div class="tkt-field">
+                    <span class="field-lbl">CINEMA THEATRE</span>
+                    <span class="field-val" id="tkt-theatre">Umaa Rajendra Cinemas, Dindigul</span>
+                  </div>
+                  <div class="tkt-field">
+                    <span class="field-lbl">DATE & TIME</span>
+                    <span class="field-val" id="tkt-datetime">28 Aug | 06:30 PM</span>
+                  </div>
+                  <div class="tkt-field">
+                    <span class="field-lbl">SEATS</span>
+                    <span class="field-val highlight" id="tkt-seats">E5, E6 (GOLD CLASS)</span>
+                  </div>
+                  <div class="tkt-field">
+                    <span class="field-lbl">BOOKED FOR</span>
+                    <span class="field-val" id="tkt-name">User</span>
+                  </div>
+                </div>
+
+                <div class="tkt-total-strip">
+                  <span>TOTAL AMOUNT PAID: <strong id="tkt-price">₹348.84</strong></span>
+                  <span class="bms-verified"><i data-lucide="shield-check"></i> BMS CONFIRMED</span>
+                </div>
+
+                <!-- Razorpay Verified Stamp -->
+                <div class="razorpay-verified-stamp" id="tkt-rzp-stamp">
+                  <i data-lucide="check-circle"></i>
+                  <span>Paid securely via Razorpay (Payment Ref: <strong id="tkt-rzp-id">pay_RP_DGL_94821</strong>)</span>
+                </div>
+              </div>
+
+              <div class="tkt-qr-side">
+                <div class="qr-box">
+                  <i data-lucide="qr-code"></i>
+                </div>
+                <span class="tkt-code" id="tkt-ref-code">BMS-DGL-89421</span>
+                <span class="scan-label">Scan at Cinema Entrance</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Automated Confirmation Email Preview -->
+          <div class="email-preview-box">
+            <div class="email-preview-head">
+              <i data-lucide="mail"></i>
+              <div>
+                <strong>Automated M-Ticket Confirmation</strong>
+                <span id="email-preview-sub">Sent to: user@example.com</span>
+              </div>
+            </div>
+            <div class="email-body-snippet">
+              <p><strong>Subject:</strong> Your BookMyShow M-Ticket is Confirmed! (Booking Ref: <span id="email-ref-id">BMS-DGL-89421</span>)</p>
+              <p>Dear <strong id="email-cust-name">Customer</strong>,</p>
+              <p>Thank you for booking with BookMyShow Dindigul! Your movie tickets for <strong id="email-movie-name">Amaran</strong> at <strong id="email-theatre-name">Umaa Rajendra Cinemas</strong> have been booked and paid successfully via Razorpay.</p>
+              <p>Please show this digital M-Ticket or Booking Ref ID at the cinema entrance kiosk for direct admission.</p>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="window.print()">
+              <i data-lucide="printer"></i> Print / Save M-Ticket
+            </button>
+            <button type="button" class="btn btn-outline" id="btn-view-wallet-after-booking">
+              <i data-lucide="ticket"></i> Go to My Bookings Wallet
+            </button>
+            <button type="button" class="btn btn-bms" id="btn-start-new-case">
+              <i data-lucide="plus-circle"></i> Book Another Movie
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= CANCELLED STATE ================= -->
+        <div class="bms-card hidden" id="cancelled-card">
+          <div class="card-head">
+            <div class="head-info">
+              <span class="step-num">Booking Status</span>
+              <h2>Booking Cancelled / Timed Out</h2>
+              <p>The seat hold has expired or was cancelled by the user.</p>
+            </div>
+            <span class="badge badge-danger"><i data-lucide="x-circle"></i> Cancelled</span>
+          </div>
+
+          <div class="audit-summary-box error">
+            <div class="validation-status-row">
+              <i data-lucide="alert-octagon"></i>
+              <div>
+                <strong>Reserved Seats Released:</strong>
+                <p>The held seats have been unlocked and returned to the Dindigul cinema live seating pool.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-bms" id="btn-restart-from-cancel">
+              <i data-lucide="rotate-ccw"></i> Start New Booking
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= VIEW 2: MY BOOKINGS & PASS WALLET ================= -->
+    <div id="view-my-bookings" class="app-view hidden">
+      <div class="bms-card">
+        <div class="card-head">
+          <div class="head-info">
+            <span class="step-num">Customer Ticket Wallet</span>
+            <h2>My Cinema Bookings & M-Tickets</h2>
+            <p>Manage upcoming shows, view digital QR turnstile passes, reschedule showtimes, or request instant refunds.</p>
+          </div>
+          <button type="button" class="btn btn-bms" id="btn-wallet-new-booking">
+            <i data-lucide="plus"></i> Book New Show
+          </button>
+        </div>
+
+        <!-- Wallet Ticket List Container -->
+        <div class="ticket-wallet-list" id="ticket-wallet-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= VIEW 3: F&B CONCESSIONS STAND ================= -->
+    <div id="view-concessions" class="app-view hidden">
+      <div class="bms-card">
+        <div class="card-head">
+          <div class="head-info">
+            <span class="step-num">Cinema Concessions Menu</span>
+            <h2>CineWave Snacks & Gourmet Popcorn Bar</h2>
+            <p>Freshly popped snacks, hot appetizers, and refreshing beverages for Dindigul multiplex screens.</p>
+          </div>
+          <span class="badge badge-orange"><i data-lucide="sparkles"></i> 100% Fresh & Hygenic</span>
+        </div>
+
+        <div class="concessions-grid" id="standalone-concessions-grid">
+          <!-- Populated via JS -->
+        </div>
+
+        <div class="audit-summary-box success">
+          <div class="validation-status-row">
+            <i data-lucide="info"></i>
+            <div>
+              <strong>Quick In-Cinema Delivery:</strong>
+              <p>Concessions ordered here will be tagged to your active booking and served directly to your seat during interval.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= VIEW 4: THEATRE MANAGER & GATE SCANNER ================= -->
+    <div id="view-manager" class="app-view hidden">
+      <!-- Live Metrics Dashboard -->
+      <div class="manager-metrics-grid">
+        <div class="metric-stat-card">
+          <div class="metric-icon-box">
+            <i data-lucide="indian-rupee"></i>
+          </div>
+          <div class="metric-info">
+            <h5>Today's Gross Box Office</h5>
+            <strong id="metric-gboc">₹1,48,920</strong>
+          </div>
+        </div>
+
+        <div class="metric-stat-card">
+          <div class="metric-icon-box green">
+            <i data-lucide="users"></i>
+          </div>
+          <div class="metric-info">
+            <h5>Auditorium Occupancy</h5>
+            <strong id="metric-occupancy">87.7%</strong>
+          </div>
+        </div>
+
+        <div class="metric-stat-card">
+          <div class="metric-icon-box amber">
+            <i data-lucide="ticket"></i>
+          </div>
+          <div class="metric-info">
+            <h5>Tickets Sold Today</h5>
+            <strong id="metric-tickets-sold">684 / 780</strong>
+          </div>
+        </div>
+
+        <div class="metric-stat-card">
+          <div class="metric-icon-box blue">
+            <i data-lucide="popcorn"></i>
+          </div>
+          <div class="metric-info">
+            <h5>F&B Concessions Sales</h5>
+            <strong id="metric-fb">₹34,250</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Gate Scanner Simulator Card -->
+      <div class="scanner-sim-box">
+        <div class="card-head">
+          <div class="head-info">
+            <span class="step-num">Staff / Usher Tool</span>
+            <h2>Gate Barcode & QR Code Turnstile Scanner</h2>
+            <p>Scan patron M-Ticket QR code or type reference ID to validate auditorium admission.</p>
+          </div>
+          <span class="badge badge-green"><i data-lucide="radio"></i> Live Scanner Online</span>
+        </div>
+
+        <div class="scanner-layout">
+          <div>
+            <div class="scanner-viewport">
+              <div class="scanner-line"></div>
+              <i data-lucide="qr-code" style="width: 110px; height: 110px; color: rgba(255,255,255,0.7); margin-bottom: 0.75rem;"></i>
+              <p style="font-size: 0.8rem; color: #94a3b8;">Place digital M-Ticket QR Code in front of scanner</p>
+            </div>
+
+            <div class="form-group" style="margin-top: 1rem;">
+              <label>Simulate Scanner Input (Booking Reference ID):</label>
+              <div class="promo-input-group">
+                <input type="text" id="scan-input-ref" value="BMS-DGL-9281" />
+                <button type="button" class="btn btn-bms" id="btn-trigger-scan">
+                  <i data-lucide="scan"></i> Scan Ticket
+                </button>
+              </div>
+            </div>
+
+            <div class="promo-pills-row">
+              <span class="preset-title" style="width: 100%;">Sample Valid & Invalid Passes:</span>
+              <span class="quick-promo-pill" data-scan="BMS-DGL-9281">⚡ BMS-DGL-9281 (Amaran - Valid)</span>
+              <span class="quick-promo-pill" data-scan="BMS-DGL-7714">⚡ BMS-DGL-7714 (GOAT - Valid)</span>
+              <span class="quick-promo-pill" data-scan="BMS-DGL-4520">⚡ BMS-DGL-4520 (Vettaiyan - Scanned)</span>
+              <span class="quick-promo-pill" data-scan="BMS-DGL-9999">⚡ BMS-DGL-9999 (Invalid/Refunded)</span>
+            </div>
+          </div>
+
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">
+              <i data-lucide="shield-check"></i> Turnstile Validation Output
+            </h4>
+
+            <div id="scanner-result-display" class="scanner-result-card valid">
+              <div class="validation-status-row">
+                <i data-lucide="check-circle-2" id="scan-res-icon" style="color: var(--accent-green); width: 32px; height: 32px;"></i>
+                <div>
+                  <strong id="scan-res-title" style="font-size: 1.05rem;">ADMISSION GRANTED • 2 TICKETS</strong>
+                  <p id="scan-res-details" style="font-size: 0.85rem; margin-top: 0.25rem;">
+                    Patron: <strong id="scan-patron-name">User</strong> | Seats: <strong>E5, E6 (Screen 1)</strong><br>
+                    Movie: <strong>Amaran (06:30 PM)</strong> | Status: <strong>Verified OK</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Real-time Admission Audit Log -->
+            <div style="margin-top: 1.25rem;">
+              <h5 style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Recent Gate Entry Logs (Dindigul Gate 1)
+              </h5>
+              <div style="background: var(--bms-navy); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.78rem; font-family: var(--font-mono); line-height: 1.7;" id="gate-audit-log">
+                <div>[06:12:45 PM] BMS-DGL-4520 &bull; Admit 1 (Seat D4) &bull; Gate Turnstile A &bull; OK</div>
+                <div>[06:05:10 PM] BMS-DGL-3112 &bull; Admit 4 (Seats B1-B4) &bull; Gate Turnstile B &bull; OK</div>
+                <div>[05:58:22 PM] BMS-DGL-1090 &bull; Admit 2 (Seats F1, F2) &bull; Gate Turnstile A &bull; OK</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= RAZORPAY CHECKOUT MODAL ================= -->
+  <div class="razorpay-modal-overlay hidden" id="razorpay-modal">
+    <div class="razorpay-modal-dialog">
+      
+      <!-- Processing Spinner Overlay -->
+      <div class="rzp-loader-overlay hidden" id="rzp-loader">
+        <div class="rzp-spinner"></div>
+        <h3 id="rzp-loader-title">Processing Payment Securely...</h3>
+        <p id="rzp-loader-desc">Connecting to Razorpay Banking Gateway & Authorizing Transaction</p>
+      </div>
+
+      <!-- Razorpay Header -->
+      <div class="rzp-header">
+        <div class="rzp-brand-group">
+          <div class="rzp-logo-badge">Razorpay</div>
+          <div class="rzp-merchant-info">
+            <h4>CineWave Entertainment</h4>
+            <p id="rzp-order-ref">Order: order_RP_DGL_94821</p>
+          </div>
+        </div>
+        <div class="rzp-amount-col">
+          <span class="rzp-amount-label">Amount Payable</span>
+          <span class="rzp-amount-val" id="rzp-display-amount">₹348.84</span>
+        </div>
+      </div>
+
+      <!-- Razorpay Body (Sidebar + Tab Content) -->
+      <div class="rzp-body">
+        
+        <!-- Left Sidebar Navigation -->
+        <div class="rzp-nav-sidebar">
+          <button type="button" class="rzp-tab-btn active" data-rzp-tab="upi">
+            <i data-lucide="smartphone"></i> UPI / QR
+          </button>
+          <button type="button" class="rzp-tab-btn" data-rzp-tab="cards">
+            <i data-lucide="credit-card"></i> Cards
+          </button>
+          <button type="button" class="rzp-tab-btn" data-rzp-tab="netbanking">
+            <i data-lucide="landmark"></i> Net Banking
+          </button>
+          <button type="button" class="rzp-tab-btn" data-rzp-tab="wallets">
+            <i data-lucide="wallet"></i> Wallets
+          </button>
+        </div>
+
+        <!-- Right Content Area -->
+        <div class="rzp-content-pane">
+          
+          <!-- TAB 1: UPI -->
+          <div class="rzp-tab-content" id="rzp-tab-upi">
+            <div class="rzp-pane-head">
+              <h4>Pay using UPI Apps</h4>
+              <p>Scan QR code or click your preferred UPI application</p>
+            </div>
+
+            <div class="upi-apps-grid">
+              <div class="upi-app-card selected" data-upi="gpay">
+                <div class="upi-app-icon gpay">G</div>
+                <span>Google Pay</span>
+              </div>
+              <div class="upi-app-card" data-upi="phonepe">
+                <div class="upi-app-icon phonepe">Pe</div>
+                <span>PhonePe</span>
+              </div>
+              <div class="upi-app-card" data-upi="paytm">
+                <div class="upi-app-icon paytm">Pt</div>
+                <span>Paytm UPI</span>
+              </div>
+              <div class="upi-app-card" data-upi="cred">
+                <div class="upi-app-icon cred">CR</div>
+                <span>CRED UPI</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Or enter UPI ID / VPA:</label>
+              <input type="text" id="rzp-upi-id" value="user@okhdfcbank" />
+            </div>
+          </div>
+
+          <!-- TAB 2: CARDS -->
+          <div class="rzp-tab-content hidden" id="rzp-tab-cards">
+            <div class="rzp-pane-head">
+              <h4>Credit or Debit Card</h4>
+              <p>Visa, MasterCard, RuPay, Maestro accepted</p>
+            </div>
+
+            <div class="rzp-card-form">
+              <div class="form-group">
+                <label>Card Number</label>
+                <input type="text" id="rzp-card-num" value="4532 8921 7741 9021" maxlength="19" />
+              </div>
+              <div class="card-row-grid">
+                <div class="form-group">
+                  <label>Expiry (MM/YY)</label>
+                  <input type="text" id="rzp-card-exp" value="12/28" maxlength="5" />
+                </div>
+                <div class="form-group">
+                  <label>CVV</label>
+                  <input type="password" id="rzp-card-cvv" value="842" maxlength="4" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Cardholder Name</label>
+                <input type="text" id="rzp-card-name" value="Senthil Kumar" />
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: NET BANKING -->
+          <div class="rzp-tab-content hidden" id="rzp-tab-netbanking">
+            <div class="rzp-pane-head">
+              <h4>Popular Indian Banks</h4>
+              <p>Select your bank to redirect securely to internet banking</p>
+            </div>
+
+            <div class="banks-grid">
+              <div class="bank-item selected" data-bank="SBI">
+                <i data-lucide="building-2"></i> State Bank of India
+              </div>
+              <div class="bank-item" data-bank="HDFC">
+                <i data-lucide="building-2"></i> HDFC Bank
+              </div>
+              <div class="bank-item" data-bank="ICICI">
+                <i data-lucide="building-2"></i> ICICI Bank
+              </div>
+              <div class="bank-item" data-bank="AXIS">
+                <i data-lucide="building-2"></i> Axis Bank
+              </div>
+              <div class="bank-item" data-bank="KOTAK">
+                <i data-lucide="building-2"></i> Kotak Mahindra
+              </div>
+              <div class="bank-item" data-bank="PNB">
+                <i data-lucide="building-2"></i> Punjab National Bank
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: WALLETS -->
+          <div class="rzp-tab-content hidden" id="rzp-tab-wallets">
+            <div class="rzp-pane-head">
+              <h4>Digital Wallets</h4>
+              <p>Pay instantly with your linked digital wallet</p>
+            </div>
+
+            <div class="banks-grid">
+              <div class="bank-item selected" data-wallet="Amazon Pay">
+                <i data-lucide="wallet-2"></i> Amazon Pay
+              </div>
+              <div class="bank-item" data-wallet="Mobikwik">
+                <i data-lucide="wallet-2"></i> Mobikwik Wallet
+              </div>
+              <div class="bank-item" data-wallet="Airtel Money">
+                <i data-lucide="wallet-2"></i> Airtel Payments Bank
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Action Buttons -->
+          <div>
+            <button type="button" class="btn-rzp-pay" id="btn-rzp-submit-payment">
+              <i data-lucide="lock"></i> Pay ₹<span id="rzp-btn-amt">348.84</span> Securely
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-close-rzp-modal" style="width: 100%; margin-top: 0.5rem; justify-content: center; font-size: 0.8rem;">
+              Cancel & Return to Booking
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Razorpay Footer -->
+      <div class="rzp-trust-footer">
+        <div class="rzp-trust-seal">
+          <i data-lucide="shield-check"></i>
+          <span>Secured by Razorpay 256-bit SSL encryption</span>
+        </div>
+        <span>PCI-DSS Level 1 Compliant</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= MODAL: TICKET CANCELLATION & SLA REFUND ================= -->
+  <div class="app-modal-overlay hidden" id="cancel-modal">
+    <div class="app-modal-dialog">
+      <div class="modal-head">
+        <h3><i data-lucide="alert-triangle" style="color: var(--bms-primary);"></i> Cancel Booking & SLA Refund</h3>
+        <button type="button" class="btn-close-modal" id="btn-close-cancel-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to cancel booking <strong id="cancel-modal-ref" class="ticket-id-tag">BMS-DGL-9281</strong>?</p>
+        
+        <div class="audit-summary-box error" style="margin: 1rem 0;">
+          <div class="validation-status-row">
+            <i data-lucide="shield-alert"></i>
+            <div>
+              <strong>Dindigul Cinema SLA Policy:</strong>
+              <p>Cancellations done > 2 hours prior to showtime are eligible for an <strong>80% refund</strong>. Reserved seats will immediately be recycled back into the public seating pool.</p>
+            </div>
+          </div>
+        </div>
+
+        <table class="refund-breakdown-table">
+          <tr>
+            <td>Original Amount Paid:</td>
+            <td id="cancel-modal-paid">₹348.84</td>
+          </tr>
+          <tr>
+            <td>Cancellation & Convenience Deduction (20%):</td>
+            <td id="cancel-modal-deduct" style="color: var(--bms-primary);">-₹69.77</td>
+          </tr>
+          <tr style="border-top: 2px solid var(--border-color); font-weight: 800; font-size: 1rem;">
+            <td>Net Refund to Original Payment Source:</td>
+            <td id="cancel-modal-refund" style="color: var(--accent-green);">₹279.07</td>
+          </tr>
+        </table>
+        
+        <p style="font-size: 0.75rem; color: var(--text-muted);">
+          Refund will be credited back via Razorpay / UPI / Bank within 15 minutes.
+        </p>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" id="btn-abort-cancel">Keep Booking</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-cancel-action">
+          <i data-lucide="check"></i> Confirm Cancellation & Claim ₹<span id="cancel-btn-refund-val">279.07</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: RESCHEDULE SHOWTIME ================= -->
+  <div class="app-modal-overlay hidden" id="reschedule-modal">
+    <div class="app-modal-dialog">
+      <div class="modal-head">
+        <h3><i data-lucide="calendar" style="color: var(--accent-cyan);"></i> Reschedule Showtime Slot</h3>
+        <button type="button" class="btn-close-modal" id="btn-close-reschedule-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <p>Rescheduling booking for <strong id="resched-movie-title">Amaran</strong> (<span id="resched-ref-id">BMS-DGL-9281</span>):</p>
+        
+        <div class="form-group" style="margin-top: 1rem;">
+          <label>Select New Show Date:</label>
+          <input type="date" id="resched-new-date" />
+        </div>
+
+        <div class="form-group">
+          <label>Select New Showtime Slot in Dindigul:</label>
+          <select id="resched-new-time">
+            <option value="10:30 AM">10:30 AM (Morning Matinee)</option>
+            <option value="02:00 PM">02:00 PM (Noon Show)</option>
+            <option value="06:30 PM">06:30 PM (Prime Evening)</option>
+            <option value="09:45 PM" selected>09:45 PM (Night Show)</option>
+          </select>
+        </div>
+
+        <div class="audit-summary-box success" style="margin-bottom: 0;">
+          <div class="validation-status-row">
+            <i data-lucide="check-circle-2"></i>
+            <div>
+              <strong>Free Reschedule:</strong>
+              <p>No reschedule surcharge applies for BMS Platinum VIP members. Seats will be transferred automatically.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" id="btn-abort-resched">Cancel</button>
+        <button type="button" class="btn btn-bms" id="btn-confirm-resched-action">
+          <i data-lucide="refresh-cw"></i> Update Showtime
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: DIGITAL PASS VIEWER ================= -->
+  <div class="app-modal-overlay hidden" id="pass-modal">
+    <div class="app-modal-dialog" style="max-width: 600px;">
+      <div class="modal-head">
+        <h3><i data-lucide="ticket" style="color: var(--bms-primary);"></i> Digital M-Ticket Pass</h3>
+        <button type="button" class="btn-close-modal" id="btn-close-pass-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem;" id="modal-pass-container">
+        <!-- Rendered dynamically from ticket object -->
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" onclick="window.print()">
+          <i data-lucide="printer"></i> Print Pass
+        </button>
+        <button type="button" class="btn btn-bms" id="btn-dismiss-pass-modal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

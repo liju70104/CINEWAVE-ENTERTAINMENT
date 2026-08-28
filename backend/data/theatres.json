@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TH-DGL-01",
+    "name": "Umaa Rajendra Cinemas 4K RGB Laser Dolby Atmos, Dindigul",
+    "location": "Canara Colony, Dindigul",
+    "city": "Dindigul",
+    "screens": 4,
+    "soundSystem": "Dolby Atmos 7.1",
+    "totalSeats": 60,
+    "availableSeats": 52
+  },
+  {
+    "id": "TH-DGL-02",
+    "name": "Aarthi Grand Cineplex A/C 2K Dolby, Dindigul",
+    "location": "Aarthi Road, Dindigul",
+    "city": "Dindigul",
+    "screens": 3,
+    "soundSystem": "2K Dolby Surround",
+    "totalSeats": 60,
+    "availableSeats": 48
+  },
+  {
+    "id": "TH-DGL-03",
+    "name": "Vijay Theatre Barco 4K Dolby 7.1, Dindigul",
+    "location": "Natham Road, Dindigul",
+    "city": "Dindigul",
+    "screens": 2,
+    "soundSystem": "Barco 4K Dolby 7.1",
+    "totalSeats": 60,
+    "availableSeats": 55
+  },
+  {
+    "id": "TH-DGL-04",
+    "name": "J Cinemas 4K Dolby Atmos, Chinnalapatti",
+    "location": "Chinnalapatti, Dindigul",
+    "city": "Dindigul",
+    "screens": 2,
+    "soundSystem": "4K Dolby Atmos",
+    "totalSeats": 60,
+    "availableSeats": 50
+  },
+  {
+    "id": "TH-DGL-05",
+    "name": "Carnival Rajendra Screen 2, Dindigul",
+    "location": "Palani Road, Dindigul",
+    "city": "Dindigul",
+    "screens": 2,
+    "soundSystem": "2K Digital Dolby",
+    "totalSeats": 60,
+    "availableSeats": 58
+  }
+]
