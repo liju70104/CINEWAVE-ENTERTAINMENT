@@ -1,4 +1,4 @@
-# CineWave Entertainmen
+# CineWave Entertainment
 
 A full-featured, responsive **Movie Ticket Booking & Theatre Management System**
 
