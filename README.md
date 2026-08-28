@@ -1,6 +1,6 @@
-# CineWave Entertainment (BookMyShow Dindigul)
+# CineWave Entertainmen
 
-A full-featured, responsive **Movie Ticket Booking & Theatre Management System** designed for cinemas across Dindigul, Tamil Nadu (including *Umaa Rajendra Cinemas*, *Aarthi Grand Cineplex*, *Vijay Theatre*, and *J Cinemas*).
+A full-featured, responsive **Movie Ticket Booking & Theatre Management System**
 
 ---
 
