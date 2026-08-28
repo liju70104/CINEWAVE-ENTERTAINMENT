@@ -13,6 +13,9 @@
 </head>
 <body class="bms-theme">
 
+  <!-- Confetti Canvas for Celebratory Confirmation -->
+  <canvas id="confetti-canvas"></canvas>
+
   <!-- ================= AUTH / LOGIN OVERLAY SCREEN ================= -->
   <div class="login-overlay" id="login-modal">
     <div class="login-card">
@@ -94,7 +97,7 @@
   <header class="bms-header">
     <div class="bms-header-inner">
       <div class="bms-brand-zone">
-        <div class="bms-logo">
+        <div class="bms-logo" id="header-logo-btn">
           <span class="bms-logo-book">book</span>
           <span class="bms-logo-my">my</span>
           <span class="bms-logo-show">show</span>
@@ -116,8 +119,8 @@
           </button>
         </div>
 
-        <!-- City Selector -->
-        <div class="bms-location-badge">
+        <!-- City Selector Button (Opens City Modal) -->
+        <div class="bms-location-badge" id="btn-city-picker">
           <i data-lucide="map-pin"></i>
           <span class="city-name" id="current-city">Dindigul</span>
           <i data-lucide="chevron-down" class="chev-icon"></i>
@@ -234,54 +237,97 @@
           <!-- Movie Banner -->
           <div class="dgl-header-banner">
             <div class="dgl-badge-row">
-              <span class="city-pill"><i data-lucide="map-pin"></i> In Cinemas in Dindigul</span>
+              <span class="city-pill"><i data-lucide="map-pin"></i> <span id="banner-city-label">In Cinemas in Dindigul</span></span>
               <span class="story-tag"><i data-lucide="sparkles"></i> Trending Tamil & Blockbuster Releases</span>
             </div>
-            <h2>Now Showing in Dindigul</h2>
-            <p>Select your movie, Dindigul theatre screen, preferred showtime slot, and seats.</p>
+            <h2>Now Showing in Cinema Halls</h2>
+            <p>Select your movie, theatre screen, daily showtime slot, and preferred auditorium seats.</p>
+          </div>
+
+          <!-- Quick Genre Filter Pills -->
+          <div class="genre-filters-row">
+            <button type="button" class="genre-pill active" data-genre="all">🎬 All Movies</button>
+            <button type="button" class="genre-pill" data-genre="Action">🔥 Action / Thriller</button>
+            <button type="button" class="genre-pill" data-genre="Tamil">🌟 Tamil Blockbusters</button>
+            <button type="button" class="genre-pill" data-genre="Sci-Fi">🚀 Sci-Fi / Adventure</button>
+            <button type="button" class="genre-pill" data-genre="Laser">✨ 4K Laser & Atmos</button>
           </div>
 
           <!-- Movie Cards Grid -->
-          <div class="bms-movie-grid">
-            <div class="movie-card selected" data-movie-id="MOV-DGL-01" data-title="Amaran" data-genre="Action / Biography / Drama" data-lang="Tamil (2D, Dolby Atmos)" data-rating="9.4" data-votes="128.4K" data-img="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60">
+          <div class="bms-movie-grid" id="main-movie-grid">
+            
+            <!-- Movie 1: Amaran -->
+            <div class="movie-card selected" data-movie-id="MOV-DGL-01" data-title="Amaran" data-genre="Action / Biography / Drama" data-lang="Tamil (2D, Dolby Atmos)" data-rating="9.4" data-votes="128.4K" data-img="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60" data-trailer="https://www.youtube.com/embed/dQw4w9WgXcQ" data-synopsis="The heroic life and supreme sacrifice of Major Mukund Varadarajan of the Rajput Regiment, who led the anti-terror operation in Shopian, Kashmir. A high-octane emotional action drama featuring Sivakarthikeyan and Sai Pallavi.">
               <div class="movie-poster-wrap">
                 <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60" alt="Amaran" class="movie-img"/>
                 <div class="rating-strip"><i data-lucide="star"></i> 9.4/10 <span>(128K Votes)</span></div>
                 <span class="cert-tag">UA 16+</span>
               </div>
-              <h4 class="movie-name">Amaran</h4>
-              <span class="movie-meta">Tamil • Action/Drama</span>
+              <div class="movie-card-body">
+                <h4 class="movie-name">Amaran</h4>
+                <span class="movie-meta">Tamil • Action / Biography</span>
+                <div class="movie-card-actions">
+                  <button type="button" class="btn-card-trailer btn-open-trailer-modal" data-movie-id="MOV-DGL-01">
+                    <i data-lucide="play-circle"></i> Trailer & Info
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div class="movie-card" data-movie-id="MOV-DGL-02" data-title="The Greatest of All Time (GOAT)" data-genre="Action / Sci-Fi / Thriller" data-lang="Tamil, Telugu" data-rating="8.9" data-votes="95.2K" data-img="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=60">
+            <!-- Movie 2: GOAT -->
+            <div class="movie-card" data-movie-id="MOV-DGL-02" data-title="The Greatest of All Time (GOAT)" data-genre="Action / Sci-Fi / Thriller" data-lang="Tamil, Telugu" data-rating="8.9" data-votes="95.2K" data-img="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=60" data-trailer="https://www.youtube.com/embed/dQw4w9WgXcQ" data-synopsis="A retired elite Special Anti-Terrorist Squad operative is drawn back into a high-stakes conspiracy across Thailand and Moscow when a rogue adversary from his past threatens his family. Starring Thalapathy Vijay in dual roles.">
               <div class="movie-poster-wrap">
                 <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=60" alt="GOAT" class="movie-img"/>
                 <div class="rating-strip"><i data-lucide="star"></i> 8.9/10 <span>(95K Votes)</span></div>
                 <span class="cert-tag">UA</span>
               </div>
-              <h4 class="movie-name">GOAT - The Greatest Of All Time</h4>
-              <span class="movie-meta">Tamil • Sci-Fi Action</span>
+              <div class="movie-card-body">
+                <h4 class="movie-name">The Greatest Of All Time</h4>
+                <span class="movie-meta">Tamil • Sci-Fi Action</span>
+                <div class="movie-card-actions">
+                  <button type="button" class="btn-card-trailer btn-open-trailer-modal" data-movie-id="MOV-DGL-02">
+                    <i data-lucide="play-circle"></i> Trailer & Info
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div class="movie-card" data-movie-id="MOV-DGL-03" data-title="Vettaiyan" data-genre="Action / Police Drama" data-lang="Tamil (Dolby 7.1)" data-rating="8.6" data-votes="81.6K" data-img="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&auto=format&fit=crop&q=60">
+            <!-- Movie 3: Vettaiyan -->
+            <div class="movie-card" data-movie-id="MOV-DGL-03" data-title="Vettaiyan" data-genre="Action / Police Drama" data-lang="Tamil (Dolby 7.1)" data-rating="8.6" data-votes="81.6K" data-img="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&auto=format&fit=crop&q=60" data-trailer="https://www.youtube.com/embed/dQw4w9WgXcQ" data-synopsis="A fearless encounter specialist IPS officer takes on corruption and crime cartels while confronting the moral questions of judicial encounters and systemic justice. Starring Superstar Rajinikanth and Amitabh Bachchan.">
               <div class="movie-poster-wrap">
                 <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&auto=format&fit=crop&q=60" alt="Vettaiyan" class="movie-img"/>
                 <div class="rating-strip"><i data-lucide="star"></i> 8.6/10 <span>(81K Votes)</span></div>
                 <span class="cert-tag">UA</span>
               </div>
-              <h4 class="movie-name">Vettaiyan</h4>
-              <span class="movie-meta">Tamil • Action Thriller</span>
+              <div class="movie-card-body">
+                <h4 class="movie-name">Vettaiyan</h4>
+                <span class="movie-meta">Tamil • Action Police Drama</span>
+                <div class="movie-card-actions">
+                  <button type="button" class="btn-card-trailer btn-open-trailer-modal" data-movie-id="MOV-DGL-03">
+                    <i data-lucide="play-circle"></i> Trailer & Info
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div class="movie-card" data-movie-id="MOV-DGL-04" data-title="Interstellar (Re-Release 4K)" data-genre="Sci-Fi / Adventure" data-lang="English (4K RGB Laser)" data-rating="9.6" data-votes="240K" data-img="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&auto=format&fit=crop&q=60">
+            <!-- Movie 4: Interstellar -->
+            <div class="movie-card" data-movie-id="MOV-DGL-04" data-title="Interstellar (Re-Release 4K)" data-genre="Sci-Fi / Adventure" data-lang="English (4K RGB Laser)" data-rating="9.6" data-votes="240K" data-img="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&auto=format&fit=crop&q=60" data-trailer="https://www.youtube.com/embed/zSWdZVtXT7E" data-synopsis="When Earth becomes uninhabitable in the future, a former NASA pilot and team of researchers travel through a wormhole across the galaxy in an attempt to find a new home for humanity. Directed by Christopher Nolan.">
               <div class="movie-poster-wrap">
                 <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&auto=format&fit=crop&q=60" alt="Interstellar" class="movie-img"/>
                 <div class="rating-strip"><i data-lucide="star"></i> 9.6/10 <span>(240K Votes)</span></div>
                 <span class="cert-tag">UA</span>
               </div>
-              <h4 class="movie-name">Interstellar (4K Laser)</h4>
-              <span class="movie-meta">English • Sci-Fi Masterpiece</span>
+              <div class="movie-card-body">
+                <h4 class="movie-name">Interstellar (4K Laser)</h4>
+                <span class="movie-meta">English • Sci-Fi Masterpiece</span>
+                <div class="movie-card-actions">
+                  <button type="button" class="btn-card-trailer btn-open-trailer-modal" data-movie-id="MOV-DGL-04">
+                    <i data-lucide="play-circle"></i> Trailer & Info
+                  </button>
+                </div>
+              </div>
             </div>
+
           </div>
 
           <!-- Main Booking Form -->
@@ -321,12 +367,12 @@
               </div>
             </div>
 
-            <!-- Dindigul Theatres & Showtime Selection -->
+            <!-- Cinema Theatres & Showtime Selection -->
             <div class="form-section">
-              <h4 class="section-title"><i data-lucide="building"></i> Dindigul Cinema Theatres & Screen Format</h4>
+              <h4 class="section-title"><i data-lucide="building"></i> Cinema Theatres & Screen Format</h4>
               <div class="grid-2">
                 <div class="form-group">
-                  <label>Select Theatre in Dindigul <span class="req">*</span></label>
+                  <label>Select Cinema Screen <span class="req">*</span></label>
                   <select id="theatre-select" required>
                     <option value="TH-DGL-01" data-loc="Canara Colony, Dindigul">Umaa Rajendra Cinemas 4K RGB Laser Dolby Atmos, Dindigul</option>
                     <option value="TH-DGL-02" data-loc="Aarthi Road, Dindigul">Aarthi Grand Cineplex A/C 2K Dolby, Dindigul</option>
@@ -352,7 +398,7 @@
                   <input type="date" id="show-date" required />
                 </div>
                 <div class="form-group">
-                  <label>Show Timing Slot (Dindigul Daily Schedule) <span class="req">*</span></label>
+                  <label>Show Timing Slot <span class="req">*</span></label>
                   <div class="showtime-pills">
                     <label class="time-pill">
                       <input type="radio" name="showtime_radio" value="10:30 AM" />
@@ -740,7 +786,7 @@
           <div class="terms-group">
             <label class="checkbox-label">
               <input type="checkbox" id="chk-policy" checked />
-              <span>I acknowledge the BookMyShow Dindigul cinema terms & agree to receive SMS/WhatsApp M-Ticket updates.</span>
+              <span>I acknowledge the BookMyShow cinema terms & agree to receive SMS/WhatsApp M-Ticket updates.</span>
             </label>
           </div>
 
@@ -769,7 +815,7 @@
           <div class="bms-m-ticket" id="ticket-pass-element">
             <div class="ticket-top-banner">
               <div class="bms-tkt-logo">book<span>my</span>show</div>
-              <span class="tkt-badge-city">DINDIGUL MULTIPLEX</span>
+              <span class="tkt-badge-city" id="tkt-city-badge">DINDIGUL MULTIPLEX</span>
             </div>
 
             <div class="ticket-body">
@@ -830,7 +876,7 @@
             <div class="email-body-snippet">
               <p><strong>Subject:</strong> Your BookMyShow M-Ticket is Confirmed! (Booking Ref: <span id="email-ref-id">BMS-DGL-89421</span>)</p>
               <p>Dear <strong id="email-cust-name">Customer</strong>,</p>
-              <p>Thank you for booking with BookMyShow Dindigul! Your movie tickets for <strong id="email-movie-name">Amaran</strong> at <strong id="email-theatre-name">Umaa Rajendra Cinemas</strong> have been booked and paid successfully via Razorpay.</p>
+              <p>Thank you for booking with BookMyShow! Your movie tickets for <strong id="email-movie-name">Amaran</strong> at <strong id="email-theatre-name">Umaa Rajendra Cinemas</strong> have been booked and paid successfully via Razorpay.</p>
               <p>Please show this digital M-Ticket or Booking Ref ID at the cinema entrance kiosk for direct admission.</p>
             </div>
           </div>
@@ -864,7 +910,7 @@
               <i data-lucide="alert-octagon"></i>
               <div>
                 <strong>Reserved Seats Released:</strong>
-                <p>The held seats have been unlocked and returned to the Dindigul cinema live seating pool.</p>
+                <p>The held seats have been unlocked and returned to the cinema live seating pool.</p>
               </div>
             </div>
           </div>
@@ -907,7 +953,7 @@
           <div class="head-info">
             <span class="step-num">Cinema Concessions Menu</span>
             <h2>CineWave Snacks & Gourmet Popcorn Bar</h2>
-            <p>Freshly popped snacks, hot appetizers, and refreshing beverages for Dindigul multiplex screens.</p>
+            <p>Freshly popped snacks, hot appetizers, and refreshing beverages for cinema screens.</p>
           </div>
           <span class="badge badge-orange"><i data-lucide="sparkles"></i> 100% Fresh & Hygenic</span>
         </div>
@@ -1032,7 +1078,7 @@
             <!-- Real-time Admission Audit Log -->
             <div style="margin-top: 1.25rem;">
               <h5 style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.5rem;">
-                Recent Gate Entry Logs (Dindigul Gate 1)
+                Recent Gate Entry Logs (Cinema Gate 1)
               </h5>
               <div style="background: var(--bms-navy); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.78rem; font-family: var(--font-mono); line-height: 1.7;" id="gate-audit-log">
                 <div>[06:12:45 PM] BMS-DGL-4520 &bull; Admit 1 (Seat D4) &bull; Gate Turnstile A &bull; OK</div>
@@ -1231,6 +1277,95 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: MOVIE TRAILER & DETAILS ================= -->
+  <div class="app-modal-overlay hidden" id="movie-detail-modal">
+    <div class="app-modal-dialog" style="max-width: 620px;">
+      <div class="modal-head">
+        <h3 id="mdm-title"><i data-lucide="film" style="color: var(--bms-primary);"></i> Movie Details</h3>
+        <button type="button" class="btn-close-modal" id="btn-close-movie-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="movie-details-modal-grid">
+          <img src="" alt="Poster" class="movie-modal-poster" id="mdm-poster" />
+          <div>
+            <span class="cert-tag" id="mdm-cert" style="position: static; display: inline-block; margin-bottom: 0.35rem;">UA</span>
+            <h2 id="mdm-name" style="font-size: 1.3rem; font-weight: 900; margin-bottom: 0.2rem;">Movie Title</h2>
+            <p id="mdm-genre" style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Genre</p>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent-amber); margin-bottom: 0.5rem;">
+              <i data-lucide="star" style="width: 14px; height: 14px; fill: var(--accent-amber); display: inline-block; vertical-align: middle;"></i>
+              <span id="mdm-rating">9.4/10</span> • <span id="mdm-lang" style="color: #93c5fd;">Tamil</span>
+            </div>
+            <div class="movie-cast-pills" id="mdm-cast-pills">
+              <!-- Filled via JS -->
+            </div>
+          </div>
+        </div>
+
+        <p id="mdm-synopsis" class="movie-synopsis-text" style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
+          Plot synopsis...
+        </p>
+
+        <div style="background: var(--bms-navy); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.78rem;">
+          <strong><i data-lucide="sparkles" style="width: 14px; height: 14px; color: var(--accent-amber);"></i> Premium Formats:</strong>
+          <p style="color: var(--text-secondary); margin-top: 0.2rem;">Available in 4K RGB Laser, Dolby Atmos 7.1 Surround, and VIP Recliner Suite.</p>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" id="btn-dismiss-movie-modal">Close</button>
+        <button type="button" class="btn btn-bms" id="btn-modal-book-this-movie">
+          <i data-lucide="ticket"></i> Book Tickets For This Movie
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: CITY SELECTOR ================= -->
+  <div class="app-modal-overlay hidden" id="city-modal">
+    <div class="app-modal-dialog">
+      <div class="modal-head">
+        <h3><i data-lucide="map-pin" style="color: var(--bms-primary);"></i> Select Your City</h3>
+        <button type="button" class="btn-close-modal" id="btn-close-city-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+          Choose your city to view local multiplexes, real-time showtimes, and ticket availability:
+        </p>
+        <div class="city-grid">
+          <div class="city-card active" data-city="Dindigul">
+            <i data-lucide="map-pin"></i>
+            <strong>Dindigul</strong>
+            <small>5 Theatres</small>
+          </div>
+          <div class="city-card" data-city="Madurai">
+            <i data-lucide="map-pin"></i>
+            <strong>Madurai</strong>
+            <small>8 Theatres</small>
+          </div>
+          <div class="city-card" data-city="Chennai">
+            <i data-lucide="map-pin"></i>
+            <strong>Chennai</strong>
+            <small>24 Theatres</small>
+          </div>
+          <div class="city-card" data-city="Coimbatore">
+            <i data-lucide="map-pin"></i>
+            <strong>Coimbatore</strong>
+            <small>12 Theatres</small>
+          </div>
+          <div class="city-card" data-city="Trichy">
+            <i data-lucide="map-pin"></i>
+            <strong>Trichy</strong>
+            <small>6 Theatres</small>
+          </div>
+          <div class="city-card" data-city="Palani">
+            <i data-lucide="map-pin"></i>
+            <strong>Palani</strong>
+            <small>3 Theatres</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= MODAL: TICKET CANCELLATION & SLA REFUND ================= -->
   <div class="app-modal-overlay hidden" id="cancel-modal">
     <div class="app-modal-dialog">
@@ -1245,7 +1380,7 @@
           <div class="validation-status-row">
             <i data-lucide="shield-alert"></i>
             <div>
-              <strong>Dindigul Cinema SLA Policy:</strong>
+              <strong>Cinema SLA Policy:</strong>
               <p>Cancellations done > 2 hours prior to showtime are eligible for an <strong>80% refund</strong>. Reserved seats will immediately be recycled back into the public seating pool.</p>
             </div>
           </div>
@@ -1295,7 +1430,7 @@
         </div>
 
         <div class="form-group">
-          <label>Select New Showtime Slot in Dindigul:</label>
+          <label>Select New Showtime Slot:</label>
           <select id="resched-new-time">
             <option value="10:30 AM">10:30 AM (Morning Matinee)</option>
             <option value="02:00 PM">02:00 PM (Noon Show)</option>

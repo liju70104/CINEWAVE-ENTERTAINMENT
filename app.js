@@ -1,5 +1,5 @@
 // BookMyShow Dindigul - Movie Ticket Booking & Management System
-// Frontend Client Controller with Glassmorphism UI, Razorpay Payment Gateway & Custom Authentication
+// Frontend Client Controller with Glassmorphism UI, Live Search, Trailer Modal, City Selector, Razorpay & Confetti
 
 document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) {
@@ -65,10 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnLoginText = document.getElementById('btn-login-text');
   const btnLogout = document.getElementById('btn-logout');
 
-  let authMode = 'signin'; // 'signin' or 'register'
-
   tabSignIn?.addEventListener('click', () => {
-    authMode = 'signin';
     tabSignIn.classList.add('active');
     tabRegister?.classList.remove('active');
     if (authTitle) authTitle.innerText = 'Sign In to Your Account';
@@ -77,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   tabRegister?.addEventListener('click', () => {
-    authMode = 'register';
     tabRegister.classList.add('active');
     tabSignIn?.classList.remove('active');
     if (authTitle) authTitle.innerText = 'Create Your CineWave Account';
@@ -96,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (u.role) document.getElementById('login-role').value = u.role;
     } catch (e) {}
   } else {
-    // Sensible default user
     document.getElementById('login-fullname').value = 'Liju';
     document.getElementById('login-username').value = 'liju@cinewave.in';
     document.getElementById('login-password').value = 'cinewave2026';
@@ -167,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.lucide) lucide.createIcons();
   });
 
-  // Logout / Switch User
   btnLogout?.addEventListener('click', () => {
     loginModal.classList.remove('hidden');
     if (window.lucide) lucide.createIcons();
@@ -301,6 +295,214 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   syncWalletFromBackend();
 
+  // ================= LIVE REAL-TIME MOVIE SEARCH & GENRE FILTER =================
+  const headerSearchInput = document.getElementById('header-search');
+  const genrePills = document.querySelectorAll('.genre-pill');
+  const movieCards = document.querySelectorAll('.movie-card');
+
+  function filterMovies() {
+    const query = (headerSearchInput?.value || '').trim().toLowerCase();
+    const activeGenrePill = document.querySelector('.genre-pill.active');
+    const selectedGenre = activeGenrePill ? activeGenrePill.dataset.genre : 'all';
+
+    movieCards.forEach(card => {
+      const title = (card.dataset.title || '').toLowerCase();
+      const genre = (card.dataset.genre || '').toLowerCase();
+      const lang = (card.dataset.lang || '').toLowerCase();
+      const synopsis = (card.dataset.synopsis || '').toLowerCase();
+
+      const matchesQuery = !query || title.includes(query) || genre.includes(query) || lang.includes(query) || synopsis.includes(query);
+      
+      let matchesGenre = true;
+      if (selectedGenre === 'Action') matchesGenre = genre.includes('action');
+      else if (selectedGenre === 'Tamil') matchesGenre = lang.includes('tamil');
+      else if (selectedGenre === 'Sci-Fi') matchesGenre = genre.includes('sci-fi');
+      else if (selectedGenre === 'Laser') matchesGenre = lang.includes('laser') || lang.includes('atmos');
+
+      if (matchesQuery && matchesGenre) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  headerSearchInput?.addEventListener('input', () => {
+    switchView('booking');
+    filterMovies();
+  });
+
+  genrePills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      genrePills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      filterMovies();
+    });
+  });
+
+  // Header Logo click returns to Booking
+  document.getElementById('header-logo-btn')?.addEventListener('click', () => {
+    switchView('booking');
+    setStage(1, 'Select Movie & Seats');
+  });
+
+  // ================= CITY SELECTOR MODAL =================
+  const cityModal = document.getElementById('city-modal');
+  const btnCityPicker = document.getElementById('btn-city-picker');
+  const btnCloseCityModal = document.getElementById('btn-close-city-modal');
+  const cityCards = document.querySelectorAll('.city-card');
+  const currentCityText = document.getElementById('current-city');
+  const bannerCityLabel = document.getElementById('banner-city-label');
+  const tktCityBadge = document.getElementById('tkt-city-badge');
+
+  btnCityPicker?.addEventListener('click', () => {
+    cityModal?.classList.remove('hidden');
+    if (window.lucide) lucide.createIcons();
+  });
+
+  btnCloseCityModal?.addEventListener('click', () => {
+    cityModal?.classList.add('hidden');
+  });
+
+  cityCards.forEach(card => {
+    card.addEventListener('click', () => {
+      cityCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const selectedCity = card.dataset.city;
+
+      state.city = selectedCity;
+      if (currentCityText) currentCityText.innerText = selectedCity;
+      if (bannerCityLabel) bannerCityLabel.innerText = `In Cinemas in ${selectedCity}`;
+      if (tktCityBadge) tktCityBadge.innerText = `${selectedCity.toUpperCase()} MULTIPLEX`;
+
+      cityModal?.classList.add('hidden');
+    });
+  });
+
+  // ================= MOVIE TRAILER & DETAILS MODAL =================
+  const movieDetailModal = document.getElementById('movie-detail-modal');
+  const btnCloseMovieModal = document.getElementById('btn-close-movie-modal');
+  const btnDismissMovieModal = document.getElementById('btn-dismiss-movie-modal');
+  const btnModalBookThisMovie = document.getElementById('btn-modal-book-this-movie');
+  let activeModalMovie = null;
+
+  const movieDetailsData = {
+    'MOV-DGL-01': {
+      title: 'Amaran',
+      poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60',
+      genre: 'Action / Biography / Drama',
+      lang: 'Tamil (2D, Dolby Atmos)',
+      rating: '9.4/10 (128K Votes)',
+      cert: 'UA 16+',
+      cast: ['Sivakarthikeyan', 'Sai Pallavi', 'Bhuvan Arora', 'Rahul Bose'],
+      synopsis: 'The heroic life and supreme sacrifice of Major Mukund Varadarajan of the Rajput Regiment, who led the anti-terror operation in Shopian, Kashmir. A high-octane emotional action drama.'
+    },
+    'MOV-DGL-02': {
+      title: 'The Greatest of All Time (GOAT)',
+      poster: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=60',
+      genre: 'Action / Sci-Fi / Thriller',
+      lang: 'Tamil, Telugu',
+      rating: '8.9/10 (95K Votes)',
+      cert: 'UA',
+      cast: ['Thalapathy Vijay', 'Prashanth', 'Prabhu Deva', 'Sneha', 'Meenakshi'],
+      synopsis: 'A retired elite Special Anti-Terrorist Squad operative is drawn back into a high-stakes conspiracy across Thailand and Moscow when a rogue adversary from his past threatens his family.'
+    },
+    'MOV-DGL-03': {
+      title: 'Vettaiyan',
+      poster: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&auto=format&fit=crop&q=60',
+      genre: 'Action / Police Drama',
+      lang: 'Tamil (Dolby 7.1)',
+      rating: '8.6/10 (81K Votes)',
+      cert: 'UA',
+      cast: ['Superstar Rajinikanth', 'Amitabh Bachchan', 'Fahadh Faasil', 'Rana Daggubati', 'Manju Warrier'],
+      synopsis: 'A fearless encounter specialist IPS officer takes on corruption and crime cartels while confronting the moral questions of judicial encounters and systemic justice.'
+    },
+    'MOV-DGL-04': {
+      title: 'Interstellar (Re-Release 4K)',
+      poster: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&auto=format&fit=crop&q=60',
+      genre: 'Sci-Fi / Adventure',
+      lang: 'English (4K RGB Laser)',
+      rating: '9.6/10 (240K Votes)',
+      cert: 'UA',
+      cast: ['Matthew McConaughey', 'Anne Hathaway', 'Jessica Chastain', 'Michael Caine'],
+      synopsis: 'When Earth becomes uninhabitable in the future, a former NASA pilot and team of researchers travel through a wormhole across the galaxy in an attempt to find a new home for humanity.'
+    }
+  };
+
+  function openMovieDetailModal(movieId) {
+    const data = movieDetailsData[movieId];
+    if (!data) return;
+
+    activeModalMovie = { id: movieId, ...data };
+    document.getElementById('mdm-title').innerHTML = `<i data-lucide="film" style="color: var(--bms-primary);"></i> ${data.title}`;
+    document.getElementById('mdm-poster').src = data.poster;
+    document.getElementById('mdm-name').innerText = data.title;
+    document.getElementById('mdm-genre').innerText = data.genre;
+    document.getElementById('mdm-rating').innerText = data.rating;
+    document.getElementById('mdm-lang').innerText = data.lang;
+    document.getElementById('mdm-cert').innerText = data.cert;
+    document.getElementById('mdm-synopsis').innerText = data.synopsis;
+
+    const castContainer = document.getElementById('mdm-cast-pills');
+    if (castContainer) {
+      castContainer.innerHTML = data.cast.map(actor => `<span class="cast-pill">${actor}</span>`).join('');
+    }
+
+    movieDetailModal?.classList.remove('hidden');
+    if (window.lucide) lucide.createIcons();
+  }
+
+  document.querySelectorAll('.btn-open-trailer-modal').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openMovieDetailModal(btn.dataset.movieId);
+    });
+  });
+
+  btnCloseMovieModal?.addEventListener('click', () => movieDetailModal?.classList.add('hidden'));
+  btnDismissMovieModal?.addEventListener('click', () => movieDetailModal?.classList.add('hidden'));
+
+  btnModalBookThisMovie?.addEventListener('click', () => {
+    if (!activeModalMovie) return;
+    
+    // Select this movie in grid
+    movieCards.forEach(c => {
+      if (c.dataset.movieId === activeModalMovie.id) {
+        c.classList.add('selected');
+      } else {
+        c.classList.remove('selected');
+      }
+    });
+
+    state.movie.id = activeModalMovie.id;
+    state.movie.title = activeModalMovie.title;
+    state.movie.poster = activeModalMovie.poster;
+
+    const inputSel = document.getElementById('selected-movie-name');
+    if (inputSel) inputSel.value = activeModalMovie.title;
+
+    movieDetailModal?.classList.add('hidden');
+    document.getElementById('ticket-request-form')?.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Movie Card Direct Selection
+  movieCards.forEach(card => {
+    card.addEventListener('click', () => {
+      movieCards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+
+      const title = card.dataset.title;
+      const movieId = card.dataset.movieId;
+      const img = card.dataset.img;
+      state.movie.id = movieId;
+      state.movie.title = title;
+      if (img) state.movie.poster = img;
+
+      const inputSel = document.getElementById('selected-movie-name');
+      if (inputSel) inputSel.value = title;
+    });
+  });
+
   // ================= SUBNAV VIEW NAVIGATION =================
   const navTabButtons = document.querySelectorAll('.nav-tab-btn');
   const appViews = document.querySelectorAll('.app-view');
@@ -348,26 +550,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setStage(1, 'Select Movie & Seats');
   });
 
-  // Movie Card Selection
-  const movieCards = document.querySelectorAll('.movie-card');
-  movieCards.forEach(card => {
-    card.addEventListener('click', () => {
-      movieCards.forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-
-      const title = card.dataset.title;
-      const movieId = card.dataset.movieId;
-      const img = card.dataset.img;
-      state.movie.id = movieId;
-      state.movie.title = title;
-      if (img) state.movie.poster = img;
-
-      const inputSel = document.getElementById('selected-movie-name');
-      if (inputSel) inputSel.value = title;
-    });
-  });
-
-  // Render Dindigul Auditorium Seat Matrix
+  // Render Auditorium Seat Matrix
   const seatGrid = document.getElementById('seat-grid');
   const rows = ['A', 'B', 'C', 'D', 'E', 'F'];
   const cols = 10;
@@ -383,6 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
         seatEl.classList.add('seat-item');
         seatEl.innerText = seatId;
         seatEl.dataset.seat = seatId;
+        seatEl.title = `Row ${r} • Seat ${c}`;
 
         if (occupiedSeats.includes(seatId)) {
           seatEl.classList.add('occupied');
@@ -485,7 +669,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="snack-info">
           <h4>Jumbo Caramel Popcorn Tub</h4>
-          <p>Buttery crispy caramel crunch popped fresh for Dindigul moviegoers.</p>
+          <p>Buttery crispy caramel crunch popped fresh for moviegoers.</p>
           <div class="snack-footer">
             <span class="snack-price">₹220</span>
             <span class="badge badge-green"><i data-lucide="check"></i> In Stock</span>
@@ -526,7 +710,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="snack-tag veg">Beverage</span>
         </div>
         <div class="snack-info">
-          <h4>Dindigul Special Iced Filter Coffee</h4>
+          <h4>Special Iced Filter Coffee</h4>
           <p>Traditional South Indian degree decoction blend with creamy milk.</p>
           <div class="snack-footer">
             <span class="snack-price">₹120</span>
@@ -821,7 +1005,7 @@ document.addEventListener('DOMContentLoaded', () => {
         routeDetails.innerHTML = `
           <p><strong>Screen Type:</strong> <code>4K RGB Curved Laser Screen</code></p>
           <p><strong>Sound Format:</strong> <code>64-Channel Dolby Atmos 3D Audio</code></p>
-          <p><strong>Auditorium:</strong> Main Screen 1, Umaa Rajendra Cinemas, Dindigul.</p>
+          <p><strong>Auditorium:</strong> Main Screen 1, Umaa Rajendra Cinemas.</p>
         `;
       }
     } else {
@@ -935,11 +1119,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Open Razorpay Checkout Modal
   btnOpenRazorpay?.addEventListener('click', async () => {
     if (!document.getElementById('chk-policy').checked) {
-      alert('Please agree to the BookMyShow Dindigul admission terms.');
+      alert('Please agree to the BookMyShow admission terms.');
       return;
     }
 
-    // Call Backend API to create Razorpay Order
     let orderId = `order_RP_DGL_${Math.floor(100000 + Math.random() * 900000)}`;
     try {
       const res = await fetch('/api/payment/create-order', {
@@ -966,7 +1149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     razorpayModal?.classList.add('hidden');
   });
 
-  // Switch Razorpay Tabs (UPI, Cards, Netbanking, Wallets)
+  // Switch Razorpay Tabs
   rzpTabButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const tabId = btn.dataset.rzpTab;
@@ -1026,7 +1209,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const paymentId = `pay_RP_DGL_${Math.floor(100000 + Math.random() * 900000)}`;
       state.razorpayPaymentId = paymentId;
 
-      // Verify with backend
       try {
         await fetch('/api/payment/verify', {
           method: 'POST',
@@ -1048,6 +1230,61 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1200);
   });
 
+  // ================= CELEBRATORY CONFETTI ANIMATION =================
+  function fireConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+    const colors = ['#f84464', '#10b981', '#f59e0b', '#3b82f6', '#06b6d4', '#a855f7', '#ec4899'];
+
+    for (let i = 0; i < 120; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 7 + 4,
+        d: Math.random() * 120,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.floor(Math.random() * 10) - 10,
+        tiltAngleInc: (Math.random() * 0.07) + 0.05,
+        tiltAngle: 0
+      });
+    }
+
+    let animationFrame;
+    let duration = 0;
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.tiltAngle += p.tiltAngleInc;
+        p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+        p.x += Math.sin(p.d);
+        p.tilt = Math.sin(p.tiltAngle - (p.r / 3)) * 15;
+
+        ctx.beginPath();
+        ctx.lineWidth = p.r;
+        ctx.strokeStyle = p.color;
+        ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+        ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+        ctx.stroke();
+      });
+
+      duration++;
+      if (duration < 180) {
+        animationFrame = requestAnimationFrame(draw);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        cancelAnimationFrame(animationFrame);
+      }
+    }
+
+    draw();
+  }
+
   // Complete Booking & Generate M-Ticket
   async function completeBookingFlow(paymentId, payMethod) {
     if (state.holdInterval) clearInterval(state.holdInterval);
@@ -1062,11 +1299,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tkt-price').innerText = `₹${state.totalAmount.toFixed(2)}`;
     document.getElementById('tkt-ref-code').innerText = refCode;
 
-    // Razorpay stamp on pass
     const tktRzpId = document.getElementById('tkt-rzp-id');
     if (tktRzpId) tktRzpId.innerText = paymentId;
 
-    // Email Preview
     document.getElementById('email-preview-sub').innerText = `Sent to: ${state.customer.email}`;
     document.getElementById('email-ref-id').innerText = refCode;
     document.getElementById('email-cust-name').innerText = state.customer.name;
@@ -1117,6 +1352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateWalletBadge();
 
     setStage(5, 'Booking Confirmed');
+    fireConfetti();
     if (window.lucide) lucide.createIcons();
   }
 
@@ -1323,7 +1559,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="bms-m-ticket" style="margin-bottom: 0;">
         <div class="ticket-top-banner">
           <div class="bms-tkt-logo">book<span>my</span>show</div>
-          <span class="tkt-badge-city">DINDIGUL MULTIPLEX</span>
+          <span class="tkt-badge-city">${state.city.toUpperCase()} MULTIPLEX</span>
         </div>
 
         <div class="ticket-body">
@@ -1449,7 +1685,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!tkt) {
       if (scanResultDisplay) scanResultDisplay.className = 'scanner-result-card invalid';
       if (scanResTitle) scanResTitle.innerText = '❌ INVALID PASS / NOT FOUND';
-      if (scanResDetails) scanResDetails.innerHTML = `Reference <strong>${ticketRef}</strong> was not found in the Dindigul ticketing ledger.`;
+      if (scanResDetails) scanResDetails.innerHTML = `Reference <strong>${ticketRef}</strong> was not found in the ticketing ledger.`;
       if (scanResIcon) scanResIcon.style.color = 'var(--bms-primary)';
 
       if (gateLog) {
@@ -1559,6 +1795,5 @@ document.addEventListener('DOMContentLoaded', () => {
     if (occEl) occEl.innerText = `${occPct}%`;
   }
 
-  // Synchronize Root files if needed
   updateWalletBadge();
 });
