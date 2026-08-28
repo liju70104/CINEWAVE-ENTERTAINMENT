@@ -6,7 +6,7 @@
   <title>CineWave Entertainment | Pan-India Movie Ticket Booking</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -16,80 +16,141 @@
   <!-- Confetti Canvas for Celebratory Confirmation -->
   <canvas id="confetti-canvas"></canvas>
 
-  <!-- ================= AUTH / LOGIN OVERLAY SCREEN ================= -->
+  <!-- ================= 3D AUTH / LOGIN OVERLAY SCREEN ================= -->
   <div class="login-overlay" id="login-modal">
-    <div class="login-card">
-      <div class="login-brand">
-        <div class="cw-logo">
-          <span class="cw-logo-cine">Cine</span>
-          <span class="cw-logo-wave">Wave</span>
-          <span class="cw-logo-badge">ENTERTAINMENT</span>
+    <!-- 3D Particle Background Canvas -->
+    <canvas id="login-3d-canvas"></canvas>
+
+    <div class="login-card-3d-split" id="login-card-container">
+      
+      <!-- Left Column: 3D Holographic Cinema Showcase -->
+      <div class="login-3d-hero-panel">
+        <div class="projector-ray-3d"></div>
+
+        <div>
+          <div class="cw-logo">
+            <span class="cw-logo-cine">Cine</span>
+            <span class="cw-logo-wave">Wave</span>
+            <span class="cw-logo-badge">ENTERTAINMENT</span>
+          </div>
+          <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.35rem;">
+            Pan-India Premium Multiplex & IMAX Laser Booking
+          </p>
         </div>
-        <span class="login-loc-tag" id="auth-loc-tag"><i data-lucide="map-pin"></i> Pan-India Cinemas</span>
-      </div>
 
-      <div class="login-intro">
-        <h2 id="auth-title">Sign In to CineWave</h2>
-        <p id="auth-sub">Enter your credentials to book movie tickets across India, view digital passes, and claim member discounts.</p>
-      </div>
-
-      <!-- Sign In / Register Mode Switcher -->
-      <div class="auth-tabs-toggle">
-        <button type="button" class="auth-tab-btn active" id="tab-sign-in">
-          <i data-lucide="log-in"></i> Sign In
-        </button>
-        <button type="button" class="auth-tab-btn" id="tab-register">
-          <i data-lucide="user-plus"></i> Create Account
-        </button>
-      </div>
-
-      <form id="login-form">
-        <div class="form-group">
-          <label>Full Name <span class="req">*</span></label>
-          <div class="input-with-icon">
-            <i data-lucide="user"></i>
-            <input type="text" id="login-fullname" required />
+        <!-- 3D Rotating Film Reel Hologram -->
+        <div class="film-reel-3d-box">
+          <div class="film-reel-wheel">
+            <div class="reel-spoke"></div>
+            <div class="reel-spoke"></div>
+            <div class="reel-spoke"></div>
+            <div class="reel-center-lens">
+              <i data-lucide="clapperboard" style="width: 22px; height: 22px;"></i>
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Email Address / Mobile Number <span class="req">*</span></label>
-          <div class="input-with-icon">
-            <i data-lucide="mail"></i>
-            <input type="text" id="login-username" required />
+        <!-- 3D VIP Membership Hologram Card -->
+        <div class="vip-hologram-card-3d">
+          <div class="vip-card-head">
+            <strong><i data-lucide="crown" style="width: 15px; height: 15px; vertical-align: middle; color: #f59e0b;"></i> PLATINUM VIP PASSPORT</strong>
+            <span style="font-size: 0.65rem; font-family: var(--font-mono); color: #38bdf8;">2026 EDITION</span>
+          </div>
+          <div class="vip-card-body">
+            <p>Unlock 20% Instant Discount, Zero Reschedule Surcharges & Complimentary VIP Lounge Admission.</p>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Password <span class="req">*</span></label>
-          <div class="input-with-icon">
-            <i data-lucide="lock"></i>
-            <input type="password" id="login-password" required />
+        <!-- 3D Feature Chips -->
+        <div class="feature-chips-3d-row">
+          <div class="feature-chip-3d">
+            <i data-lucide="sparkles"></i>
+            <span>14 Major Metros & 85+ Laser Screens</span>
+          </div>
+          <div class="feature-chip-3d">
+            <i data-lucide="shield-check"></i>
+            <span>Razorpay 256-Bit Secured Checkout</span>
+          </div>
+          <div class="feature-chip-3d">
+            <i data-lucide="qr-code"></i>
+            <span>Instant Digital Turnstile M-Ticket Pass</span>
           </div>
         </div>
+      </div>
 
-        <div class="form-group">
-          <label>Membership Tier</label>
-          <select id="login-role">
-            <option value="Platinum VIP Member">CineWave Platinum VIP Member (20% Discount)</option>
-            <option value="Gold Superstar">CineWave Gold Superstar (10% Discount)</option>
-            <option value="Silver Member">CineWave Silver Member (5% Discount)</option>
-            <option value="Standard Customer">Standard Account (No Discount)</option>
-          </select>
+      <!-- Right Column: Registration / Sign In Form -->
+      <div class="login-form-panel">
+        <div class="login-brand">
+          <span class="login-loc-tag" id="auth-loc-tag"><i data-lucide="map-pin"></i> Pan-India Cinema Hub</span>
+          <span style="font-size: 0.72rem; color: var(--accent-green); font-weight: 700;">
+            <i data-lucide="wifi" style="width: 13px; height: 13px; vertical-align: middle;"></i> Live Server Online
+          </span>
         </div>
 
-        <div class="form-group" style="margin-top: 0.5rem;">
-          <label class="checkbox-label" style="font-size: 0.8rem; color: var(--text-secondary);">
-            <input type="checkbox" id="chk-remember-user" checked />
-            <span>Remember my login credentials on this device</span>
-          </label>
+        <div class="login-intro">
+          <h2 id="auth-title">Sign In to CineWave</h2>
+          <p id="auth-sub">Enter your credentials to access tickets, manage bookings, and unlock Pan-India member discounts.</p>
         </div>
 
-        <button type="submit" class="btn btn-bms btn-block" id="btn-login-submit">
-          <span id="btn-login-text">Sign In & Continue Booking</span>
-          <i data-lucide="arrow-right"></i>
-        </button>
-      </form>
+        <!-- Sign In / Register Mode Switcher -->
+        <div class="auth-tabs-toggle">
+          <button type="button" class="auth-tab-btn active" id="tab-sign-in">
+            <i data-lucide="log-in"></i> Sign In
+          </button>
+          <button type="button" class="auth-tab-btn" id="tab-register">
+            <i data-lucide="user-plus"></i> Create Account
+          </button>
+        </div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label>Full Name <span class="req">*</span></label>
+            <div class="input-with-icon">
+              <i data-lucide="user"></i>
+              <input type="text" id="login-fullname" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email Address / Mobile Number <span class="req">*</span></label>
+            <div class="input-with-icon">
+              <i data-lucide="mail"></i>
+              <input type="text" id="login-username" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Password <span class="req">*</span></label>
+            <div class="input-with-icon">
+              <i data-lucide="lock"></i>
+              <input type="password" id="login-password" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Membership Tier</label>
+            <select id="login-role">
+              <option value="Platinum VIP Member">CineWave Platinum VIP Member (20% Discount)</option>
+              <option value="Gold Superstar">CineWave Gold Superstar (10% Discount)</option>
+              <option value="Silver Member">CineWave Silver Member (5% Discount)</option>
+              <option value="Standard Customer">Standard Account (No Discount)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-top: 0.5rem;">
+            <label class="checkbox-label" style="font-size: 0.8rem; color: var(--text-secondary);">
+              <input type="checkbox" id="chk-remember-user" checked />
+              <span>Remember my login credentials on this device</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-bms btn-block" id="btn-login-submit">
+            <span id="btn-login-text">Sign In & Continue Booking</span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+        </form>
+      </div>
+
     </div>
   </div>
 
@@ -109,6 +170,14 @@
       </div>
 
       <div class="bms-header-right">
+        <!-- Realistic Sound Feedback Button -->
+        <button type="button" class="btn-theme-toggle" id="btn-sound-toggle" title="Toggle Realistic UI Sound Effects">
+          <div class="theme-icon-box" id="sound-icon-box">
+            <i data-lucide="volume-2"></i>
+          </div>
+          <span class="theme-name-tag" id="sound-name-tag">Sound ON</span>
+        </button>
+
         <!-- Theme Switcher Toggle Button -->
         <div class="theme-switch-wrapper">
           <button type="button" class="btn-theme-toggle" id="btn-theme-toggle" title="Switch Theme (Dark Cinema / Light Velvet / IMAX Cyber Gold)">
@@ -441,11 +510,11 @@
                 </div>
               </div>
 
-              <!-- Seat Layout -->
+              <!-- 3D Auditorium Seat Layout -->
               <div class="bms-seat-layout">
                 <div class="cinema-screen">
                   <div class="screen-curve"></div>
-                  <span>ALL EYES THIS WAY • SCREEN</span>
+                  <span>ALL EYES THIS WAY • 4K CURVED SCREEN</span>
                 </div>
 
                 <div class="seat-matrix-wrapper">

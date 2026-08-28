@@ -25,11 +25,11 @@
 
   --font-main: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'Space Grotesk', monospace;
-  --radius-lg: 18px;
-  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
   --radius-sm: 8px;
   --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  --shadow-card: 0 14px 44px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --shadow-card: 0 16px 48px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14);
   --glow-primary: 0 0 25px rgba(248, 68, 100, 0.35);
 }
 
@@ -56,7 +56,7 @@
   --accent-blue: #2563eb;
   --accent-cyan: #0891b2;
   --accent-purple: #9333ea;
-  --shadow-card: 0 12px 36px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-card: 0 14px 38px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   --glow-primary: 0 0 25px rgba(229, 9, 20, 0.25);
 }
 
@@ -83,7 +83,7 @@
   --accent-blue: #38bdf8;
   --accent-cyan: #22d3ee;
   --accent-purple: #c084fc;
-  --shadow-card: 0 16px 48px rgba(245, 158, 11, 0.2), inset 0 1px 0 rgba(245, 158, 11, 0.3);
+  --shadow-card: 0 18px 52px rgba(245, 158, 11, 0.2), inset 0 1px 0 rgba(245, 158, 11, 0.3);
   --glow-primary: 0 0 30px rgba(245, 158, 11, 0.4);
 }
 
@@ -121,7 +121,7 @@ body.bms-theme {
 
 /* ================= GLASS CARD SYSTEM ================= */
 .bms-card, 
-.login-card, 
+.login-card-3d-split, 
 .stage-tracker-card, 
 .bms-fare-card, 
 .sla-timer-card, 
@@ -180,22 +180,23 @@ body.bms-theme {
   align-self: center;
 }
 
-/* ================= AUTH / LOGIN OVERLAY SCREEN ================= */
+/* ================= 3D LOGIN & REGISTER EXPERIENCE ================= */
 .login-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(6, 8, 12, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: radial-gradient(circle at 50% 50%, rgba(12, 16, 28, 0.94) 0%, rgba(4, 6, 10, 0.98) 100%);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+  overflow-y: auto;
 }
 
 .login-overlay.hidden {
@@ -204,18 +205,193 @@ body.bms-theme {
   pointer-events: none;
 }
 
-.login-card {
-  border-radius: var(--radius-lg);
-  padding: 2.25rem;
-  max-width: 480px;
+#login-3d-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.login-card-3d-split {
+  position: relative;
+  z-index: 2;
+  border-radius: var(--radius-lg);
+  max-width: 960px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  overflow: hidden;
+  animation: slideUp3D 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 45px rgba(248, 68, 100, 0.25) !important;
+  perspective: 1200px;
+}
+
+@keyframes slideUp3D {
+  from { opacity: 0; transform: translateY(30px) scale(0.96) rotateX(4deg); }
+  to { opacity: 1; transform: translateY(0) scale(1) rotateX(0deg); }
+}
+
+/* Left 3D Showcase Panel */
+.login-3d-hero-panel {
+  background: linear-gradient(145deg, rgba(20, 26, 42, 0.9) 0%, rgba(10, 14, 24, 0.95) 100%);
+  padding: 2.25rem 2rem;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient 3D Laser Ray Glow */
+.projector-ray-3d {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(248, 68, 100, 0.15) 50%, transparent 80%);
+  filter: blur(35px);
+  pointer-events: none;
+  animation: pulseRay 4s infinite alternate ease-in-out;
+}
+
+@keyframes pulseRay {
+  0% { opacity: 0.5; transform: translateX(-50%) scale(0.9); }
+  100% { opacity: 0.9; transform: translateX(-50%) scale(1.15); }
+}
+
+/* 3D Holographic Film Reel */
+.film-reel-3d-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.5rem 0;
+  perspective: 600px;
+}
+
+.film-reel-wheel {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 4px dashed rgba(248, 68, 100, 0.6);
+  box-shadow: 0 0 25px rgba(248, 68, 100, 0.5), inset 0 0 15px rgba(56, 189, 248, 0.4);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: rotate3dReel 12s linear infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes rotate3dReel {
+  0% { transform: rotateZ(0deg) rotateY(15deg); }
+  100% { transform: rotateZ(360deg) rotateY(15deg); }
+}
+
+.reel-center-lens {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #38bdf8 0%, #0c2340 100%);
+  box-shadow: 0 0 15px #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.reel-spoke {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.reel-spoke:nth-child(1) { transform: rotate(0deg); }
+.reel-spoke:nth-child(2) { transform: rotate(60deg); }
+.reel-spoke:nth-child(3) { transform: rotate(120deg); }
+
+/* 3D VIP Membership Hologram Card */
+.vip-hologram-card-3d {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(248, 68, 100, 0.2) 50%, rgba(56, 189, 248, 0.25) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  margin-bottom: 1rem;
+  transition: var(--transition);
+  transform: rotateX(5deg);
+}
+
+.vip-hologram-card-3d:hover {
+  transform: rotateX(0deg) scale(1.02);
+  border-color: #fde68a;
+  box-shadow: 0 14px 40px rgba(245, 158, 11, 0.35);
+}
+
+.vip-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.vip-card-head strong {
+  font-size: 0.85rem;
+  color: #fde68a;
+  letter-spacing: 0.5px;
+}
+
+.vip-card-body p {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+/* 3D Floating Feature Chips */
+.feature-chips-3d-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.feature-chip-3d {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.feature-chip-3d:hover {
+  background: rgba(248, 68, 100, 0.15);
+  border-color: var(--bms-primary);
+  transform: translateX(4px);
+}
+
+.feature-chip-3d svg {
+  width: 15px;
+  height: 15px;
+  color: var(--bms-primary);
+}
+
+/* Right Form Panel */
+.login-form-panel {
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .login-brand {
@@ -1183,54 +1359,64 @@ input:focus, select:focus {
   border-radius: 20px;
 }
 
-/* Cinema Curved Screen & Seat Matrix */
+/* Cinema 3D Curved Screen & 3D Seat Layout */
 .bms-seat-layout {
   background: var(--bms-navy);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 1.5rem;
+  padding: 1.75rem 1.5rem;
   margin-top: 1rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .cinema-screen {
   text-align: center;
-  margin-bottom: 1.75rem;
+  margin-bottom: 2rem;
   position: relative;
 }
 
 .screen-curve {
-  height: 6px;
+  height: 8px;
   background: linear-gradient(90deg, transparent 0%, #38bdf8 50%, transparent 100%);
   border-radius: 50%;
   margin-bottom: 0.5rem;
-  box-shadow: 0 0 25px #38bdf8;
+  box-shadow: 0 0 35px #38bdf8, 0 -10px 25px rgba(56, 189, 248, 0.5);
 }
 
 .cinema-screen span {
-  font-size: 0.68rem;
-  letter-spacing: 3px;
-  color: var(--text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 4px;
+  color: #93c5fd;
   font-weight: 800;
 }
 
 .seat-matrix-wrapper {
   overflow-x: auto;
   padding-bottom: 0.5rem;
+  perspective: 900px;
 }
 
 .seat-matrix {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
-  gap: 0.5rem;
-  max-width: 520px;
+  gap: 0.55rem;
+  max-width: 540px;
   margin: 0 auto;
+  transform: rotateX(12deg);
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.seat-matrix:hover {
+  transform: rotateX(0deg);
 }
 
 .seat-item {
-  height: 32px;
+  height: 34px;
   border: 1px solid var(--border-color);
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1244,16 +1430,17 @@ input:focus, select:focus {
 
 .seat-item:hover:not(.occupied) {
   border-color: var(--bms-primary);
-  background: rgba(248, 68, 100, 0.25);
-  transform: scale(1.1);
+  background: rgba(248, 68, 100, 0.3);
+  transform: scale(1.15) translateY(-2px);
+  box-shadow: 0 4px 12px rgba(248, 68, 100, 0.4);
 }
 
 .seat-item.selected {
   background: var(--accent-green) !important;
   border-color: var(--accent-green) !important;
   color: #fff;
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
-  transform: scale(1.05);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.7) !important;
+  transform: scale(1.08);
 }
 
 .seat-item.occupied {
@@ -1268,7 +1455,7 @@ input:focus, select:focus {
   display: flex;
   justify-content: center;
   gap: 1.5rem;
-  margin-top: 1.25rem;
+  margin-top: 1.5rem;
   font-size: 0.75rem;
   color: var(--text-secondary);
 }
@@ -1819,14 +2006,19 @@ input:focus, select:focus {
   cursor: pointer;
 }
 
-/* ================= STEP 5: DIGITAL M-TICKET PASS ================= */
+/* ================= STEP 5: DIGITAL M-TICKET PASS (WITH 3D EFFECT) ================= */
 .bms-m-ticket {
   background: var(--bms-navy);
   border: 2px dashed rgba(248, 68, 100, 0.4);
   border-radius: var(--radius-lg);
   overflow: hidden;
   margin-bottom: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s ease;
+}
+
+.bms-m-ticket:hover {
+  transform: translateY(-2px);
 }
 
 .ticket-top-banner {
@@ -2739,6 +2931,11 @@ input:focus, select:focus {
 }
 
 /* Responsive */
+@media (max-width: 900px) {
+  .login-card-3d-split { grid-template-columns: 1fr; max-width: 500px; }
+  .login-3d-hero-panel { display: none; }
+}
+
 @media (max-width: 768px) {
   .bms-header-inner { flex-direction: column; gap: 0.75rem; }
   .bms-search-bar { max-width: 100%; }

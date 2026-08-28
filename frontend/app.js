@@ -1,5 +1,5 @@
 // CineWave Entertainment - Pan-India Movie Ticket Booking & Management System
-// Frontend Client Controller with Glassmorphism UI, Live Search, Trailer Modal, Pan-India City Selector, Razorpay & Confetti
+// Frontend Client Controller with 3D Graphics, 3D Particle Canvas, 3D Card Tilt, Web Audio Synthesizer, Razorpay & Confetti
 
 document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) {
@@ -10,6 +10,204 @@ document.addEventListener('DOMContentLoaded', () => {
   const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
   const showDateInput = document.getElementById('show-date');
   if (showDateInput) showDateInput.value = today;
+
+  // ================= REALISTIC WEB AUDIO SYNTHESIZER =================
+  let soundEnabled = true;
+  let audioCtx = null;
+
+  function initAudioContext() {
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) {
+        audioCtx = new AudioContextClass();
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  // Realistic UI Sound Effects
+  function playSeatClickSound() {
+    if (!soundEnabled) return;
+    try {
+      initAudioContext();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(580, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.05);
+      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.05);
+    } catch (e) {}
+  }
+
+  function playTurnstileBeep(isValid = true) {
+    if (!soundEnabled) return;
+    try {
+      initAudioContext();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = isValid ? 'triangle' : 'sawtooth';
+      osc.frequency.setValueAtTime(isValid ? 920 : 220, audioCtx.currentTime);
+      if (isValid) {
+        osc.frequency.setValueAtTime(1240, audioCtx.currentTime + 0.08);
+      }
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.18);
+    } catch (e) {}
+  }
+
+  function playCinemaChime() {
+    if (!soundEnabled) return;
+    try {
+      initAudioContext();
+      if (!audioCtx) return;
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 arpeggio
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.09);
+        gain.gain.setValueAtTime(0.18, audioCtx.currentTime + idx * 0.09);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.09 + 0.35);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + idx * 0.09);
+        osc.stop(audioCtx.currentTime + idx * 0.09 + 0.35);
+      });
+    } catch (e) {}
+  }
+
+  // Sound Toggle Control
+  const soundToggleBtn = document.getElementById('btn-sound-toggle');
+  const soundIconBox = document.getElementById('sound-icon-box');
+  const soundNameTag = document.getElementById('sound-name-tag');
+
+  soundToggleBtn?.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    if (soundNameTag) soundNameTag.innerText = soundEnabled ? 'Sound ON' : 'Sound MUTED';
+    if (soundIconBox) {
+      soundIconBox.innerHTML = soundEnabled ? '<i data-lucide="volume-2"></i>' : '<i data-lucide="volume-x"></i>';
+      if (window.lucide) lucide.createIcons();
+    }
+    if (soundEnabled) playSeatClickSound();
+  });
+
+  // ================= 3D PARTICLE & PROJECTION CANVAS FOR LOGIN =================
+  function init3DLoginCanvas() {
+    const canvas = document.getElementById('login-3d-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const particles = [];
+    const numParticles = 65;
+    const colors = ['rgba(248, 68, 100, 0.7)', 'rgba(56, 189, 248, 0.65)', 'rgba(245, 158, 11, 0.6)', 'rgba(168, 85, 247, 0.5)'];
+
+    for (let i = 0; i < numParticles; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        z: Math.random() * 800 + 100,
+        size: Math.random() * 3 + 1.5,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        vz: Math.random() * 0.8 + 0.2,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
+
+    function render3DScene() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const fov = 400;
+
+      // Draw subtle ambient projector beam cones from top center
+      const grad = ctx.createRadialGradient(cx, 0, 10, cx, cy * 0.8, canvas.width * 0.7);
+      grad.addColorStop(0, 'rgba(56, 189, 248, 0.12)');
+      grad.addColorStop(0.5, 'rgba(248, 68, 100, 0.05)');
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Render 3D particles with perspective projection
+      particles.forEach(p => {
+        p.z -= p.vz;
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.z <= 0) {
+          p.z = 800;
+          p.x = Math.random() * canvas.width;
+          p.y = Math.random() * canvas.height;
+        }
+
+        const scale = fov / (fov + p.z);
+        const px = (p.x - cx) * scale + cx;
+        const py = (p.y - cy) * scale + cy;
+        const radius = p.size * scale * 1.8;
+
+        if (px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height) {
+          ctx.beginPath();
+          ctx.arc(px, py, Math.max(0.5, radius), 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.shadowBlur = 12 * scale;
+          ctx.shadowColor = p.color;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      });
+
+      requestAnimationFrame(render3DScene);
+    }
+    render3DScene();
+  }
+  init3DLoginCanvas();
+
+  // ================= 3D CARD TILT INTERACTION =================
+  const loginModal = document.getElementById('login-modal');
+  const loginCardContainer = document.getElementById('login-card-container');
+
+  if (loginModal && loginCardContainer) {
+    loginModal.addEventListener('mousemove', (e) => {
+      if (window.innerWidth < 900) return;
+      const rect = loginModal.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+
+      const rotateY = (x / (rect.width / 2)) * 8; // max 8 deg
+      const rotateX = -(y / (rect.height / 2)) * 8; // max 8 deg
+
+      loginCardContainer.style.transform = `perspective(1200px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1, 1, 1)`;
+    });
+
+    loginModal.addEventListener('mouseleave', () => {
+      loginCardContainer.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+      loginCardContainer.style.transition = 'transform 0.5s ease';
+    });
+
+    loginModal.addEventListener('mouseenter', () => {
+      loginCardContainer.style.transition = 'transform 0.1s ease-out';
+    });
+  }
 
   // ================= THEME SWITCHER ENGINE =================
   const themeToggleBtn = document.getElementById('btn-theme-toggle');
@@ -37,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Initial Theme Load
   applyTheme(themes[currentThemeIndex]);
 
   themeToggleBtn?.addEventListener('click', () => {
@@ -56,7 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
     tier: 'Platinum'
   };
 
-  const loginModal = document.getElementById('login-modal');
   const loginForm = document.getElementById('login-form');
   const tabSignIn = document.getElementById('tab-sign-in');
   const tabRegister = document.getElementById('tab-register');
@@ -116,7 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (scanPatron) scanPatron.innerText = name;
   }
 
-  // Handle Login Submit
   loginForm?.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -158,6 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateUserProfileDisplay(fullName, username, role);
     recalculatePricing();
 
+    playSeatClickSound();
     loginModal.classList.add('hidden');
     if (window.lucide) lucide.createIcons();
   });
@@ -360,10 +556,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ]
   };
 
-  // Initial theatre populate
   populateTheatresForCity('Mumbai');
 
-  // Sync wallet from backend API if available
   async function syncWalletFromBackend() {
     try {
       const res = await fetch('/api/wallet');
@@ -423,7 +617,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Header Logo click returns to Booking
   document.getElementById('header-logo-btn')?.addEventListener('click', () => {
     switchView('booking');
     setStage(1, 'Select Movie & Seats');
@@ -478,6 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (tktCityBadge) tktCityBadge.innerText = `${selectedCity.toUpperCase()} MULTIPLEX`;
 
       populateTheatresForCity(selectedCity);
+      playSeatClickSound();
 
       cityModal?.classList.add('hidden');
     });
@@ -603,6 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const inputSel = document.getElementById('selected-movie-name');
       if (inputSel) inputSel.value = title;
+      playSeatClickSound();
     });
   });
 
@@ -700,6 +895,7 @@ document.addEventListener('DOMContentLoaded', () => {
       state.selectedSeats.push(seatId);
       seatEl.classList.add('selected');
     }
+    playSeatClickSound();
   }
 
   initSeatMatrix();
@@ -718,6 +914,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.concessions[itemId]) {
           state.concessions[itemId].qty++;
           if (qtyEl) qtyEl.innerText = state.concessions[itemId].qty;
+          playSeatClickSound();
           updateConcessionsTotal();
         }
       });
@@ -727,6 +924,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.concessions[itemId] && state.concessions[itemId].qty > 0) {
           state.concessions[itemId].qty--;
           if (qtyEl) qtyEl.innerText = state.concessions[itemId].qty;
+          playSeatClickSound();
           updateConcessionsTotal();
         }
       });
@@ -953,7 +1151,6 @@ document.addEventListener('DOMContentLoaded', () => {
     state.totalAmount = Math.max(0, total);
     state.ticketQty = qty;
 
-    // Update UI elements
     const calcShowType = document.getElementById('calc-show-type');
     const calcUnitPrice = document.getElementById('calc-unit-price');
     const calcQty = document.getElementById('calc-qty');
@@ -1074,6 +1271,7 @@ document.addEventListener('DOMContentLoaded', () => {
       calcAvailText.innerText = `Requested ${qty} tickets verified against ${state.availableSeats} available slots at ${state.movie.theatre}.`;
     }
 
+    playSeatClickSound();
     setStage(2, 'Fare Breakdown');
   });
 
@@ -1125,6 +1323,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (window.lucide) lucide.createIcons();
+    playSeatClickSound();
     setStage(3, 'Experience & F&B');
   });
 
@@ -1160,6 +1359,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('rev-total').innerText = `₹${state.totalAmount.toFixed(2)}`;
 
     startHoldTimer();
+    playSeatClickSound();
     setStage(4, 'Review & Razorpay');
   });
 
@@ -1219,7 +1419,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let selectedPaymentMethod = 'UPI (Google Pay)';
 
-  // Open Razorpay Checkout Modal
   btnOpenRazorpay?.addEventListener('click', async () => {
     if (!document.getElementById('chk-policy').checked) {
       alert('Please agree to the CineWave Entertainment admission terms.');
@@ -1244,6 +1443,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('rzp-display-amount').innerText = `₹${state.totalAmount.toFixed(2)}`;
     document.getElementById('rzp-btn-amt').innerText = state.totalAmount.toFixed(2);
 
+    playSeatClickSound();
     razorpayModal?.classList.remove('hidden');
     if (window.lucide) lucide.createIcons();
   });
@@ -1252,7 +1452,6 @@ document.addEventListener('DOMContentLoaded', () => {
     razorpayModal?.classList.add('hidden');
   });
 
-  // Switch Razorpay Tabs
   rzpTabButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const tabId = btn.dataset.rzpTab;
@@ -1267,11 +1466,11 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (tabId === 'netbanking') selectedPaymentMethod = 'Net Banking (SBI)';
       else if (tabId === 'wallets') selectedPaymentMethod = 'Digital Wallet (Amazon Pay)';
 
+      playSeatClickSound();
       if (window.lucide) lucide.createIcons();
     });
   });
 
-  // UPI App Selection
   document.querySelectorAll('.upi-app-card').forEach(card => {
     card.addEventListener('click', () => {
       document.querySelectorAll('.upi-app-card').forEach(c => c.classList.remove('selected'));
@@ -1281,10 +1480,10 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (upiType === 'phonepe') selectedPaymentMethod = 'UPI (PhonePe)';
       else if (upiType === 'paytm') selectedPaymentMethod = 'UPI (Paytm)';
       else if (upiType === 'cred') selectedPaymentMethod = 'UPI (CRED)';
+      playSeatClickSound();
     });
   });
 
-  // Bank Selection
   document.querySelectorAll('.bank-item').forEach(item => {
     item.addEventListener('click', () => {
       const parent = item.parentElement;
@@ -1292,10 +1491,10 @@ document.addEventListener('DOMContentLoaded', () => {
       item.classList.add('selected');
       const bank = item.dataset.bank || item.dataset.wallet;
       selectedPaymentMethod = bank ? `Net Banking (${bank})` : 'Digital Wallet';
+      playSeatClickSound();
     });
   });
 
-  // Execute Razorpay Payment
   btnRzpSubmitPayment?.addEventListener('click', async () => {
     rzpLoader?.classList.remove('hidden');
 
@@ -1456,6 +1655,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.walletTickets.unshift(newWalletTicket);
     updateWalletBadge();
 
+    playCinemaChime();
     setStage(5, 'Booking Confirmed');
     fireConfetti();
     if (window.lucide) lucide.createIcons();
@@ -1714,6 +1914,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
+    playSeatClickSound();
     passModal?.classList.remove('hidden');
     if (window.lucide) lucide.createIcons();
   }
@@ -1763,6 +1964,7 @@ document.addEventListener('DOMContentLoaded', () => {
             entry.innerText = `[${timeStr}] ${tkt.ref} • ADMIT ${tkt.qty} (${tkt.seats.join(', ')}) • ${tkt.movie} • Gate Turnstile A • OK`;
             gateLog.prepend(entry);
           }
+          playTurnstileBeep(true);
           if (window.lucide) lucide.createIcons();
           return;
         } else if (json.status === 'ALREADY_SCANNED') {
@@ -1770,6 +1972,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (scanResTitle) scanResTitle.innerText = '⚠️ ALREADY SCANNED / DUPLICATE PASS';
           if (scanResDetails) scanResDetails.innerHTML = `Pass <strong>${ticketRef}</strong> was already validated at the gate earlier.`;
           if (scanResIcon) scanResIcon.style.color = 'var(--accent-amber)';
+          playTurnstileBeep(false);
           if (window.lucide) lucide.createIcons();
           return;
         } else if (json.status === 'REFUNDED') {
@@ -1777,6 +1980,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (scanResTitle) scanResTitle.innerText = '⛔ CANCELLED / REFUNDED PASS';
           if (scanResDetails) scanResDetails.innerHTML = `Booking <strong>${ticketRef}</strong> was cancelled and refunded. Admission denied.`;
           if (scanResIcon) scanResIcon.style.color = 'var(--bms-primary)';
+          playTurnstileBeep(false);
           if (window.lucide) lucide.createIcons();
           return;
         }
@@ -1793,6 +1997,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (scanResTitle) scanResTitle.innerText = '❌ INVALID PASS / NOT FOUND';
       if (scanResDetails) scanResDetails.innerHTML = `Reference <strong>${ticketRef}</strong> was not found in the ticketing ledger.`;
       if (scanResIcon) scanResIcon.style.color = 'var(--bms-primary)';
+      playTurnstileBeep(false);
 
       if (gateLog) {
         const entry = document.createElement('div');
@@ -1805,6 +2010,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (scanResTitle) scanResTitle.innerText = '⛔ CANCELLED / REFUNDED PASS';
       if (scanResDetails) scanResDetails.innerHTML = `Booking <strong>${tkt.ref}</strong> for <strong>${tkt.movie}</strong> was cancelled and refunded. Admission denied.`;
       if (scanResIcon) scanResIcon.style.color = 'var(--bms-primary)';
+      playTurnstileBeep(false);
 
       if (gateLog) {
         const entry = document.createElement('div');
@@ -1817,6 +2023,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (scanResTitle) scanResTitle.innerText = '⚠️ ALREADY SCANNED / DUPLICATE PASS';
       if (scanResDetails) scanResDetails.innerHTML = `Pass <strong>${tkt.ref}</strong> was already validated at the gate earlier.`;
       if (scanResIcon) scanResIcon.style.color = 'var(--accent-amber)';
+      playTurnstileBeep(false);
 
       if (gateLog) {
         const entry = document.createElement('div');
@@ -1836,6 +2043,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
       if (scanResIcon) scanResIcon.style.color = 'var(--accent-green)';
+      playTurnstileBeep(true);
 
       if (gateLog) {
         const entry = document.createElement('div');
