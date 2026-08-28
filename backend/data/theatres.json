@@ -1,7 +1,177 @@
 [
   {
+    "id": "TH-MUM-01",
+    "name": "PVR INOX Palladium & IMAX, Lower Parel",
+    "location": "High Street Phoenix, Lower Parel, Mumbai",
+    "city": "Mumbai",
+    "screens": 8,
+    "soundSystem": "IMAX Laser & Dolby Atmos",
+    "totalSeats": 60,
+    "availableSeats": 54
+  },
+  {
+    "id": "TH-MUM-02",
+    "name": "Cinepolis Viviana Megaplex 4DX & VIP, Thane",
+    "location": "Viviana Mall, Eastern Express Hwy, Mumbai",
+    "city": "Mumbai",
+    "screens": 14,
+    "soundSystem": "4DX 3D & Dolby Atmos",
+    "totalSeats": 60,
+    "availableSeats": 48
+  },
+  {
+    "id": "TH-DEL-01",
+    "name": "PVR Director's Cut & Gold Class, Vasant Kunj",
+    "location": "Ambience Mall, Nelson Mandela Marg, New Delhi",
+    "city": "Delhi-NCR",
+    "screens": 6,
+    "soundSystem": "Meyer Sound Dolby Atmos",
+    "totalSeats": 60,
+    "availableSeats": 52
+  },
+  {
+    "id": "TH-DEL-02",
+    "name": "Cinepolis DLF Avenue 4K Laser, Saket",
+    "location": "DLF Avenue Mall, Press Enclave Rd, New Delhi",
+    "city": "Delhi-NCR",
+    "screens": 7,
+    "soundSystem": "RealD 3D Dolby Atmos",
+    "totalSeats": 60,
+    "availableSeats": 50
+  },
+  {
+    "id": "TH-BLR-01",
+    "name": "PVR Superplex & IMAX, Forum South Bengaluru",
+    "location": "Konanakunte Cross, Kanakapura Rd, Bengaluru",
+    "city": "Bengaluru",
+    "screens": 11,
+    "soundSystem": "IMAX with Laser & Atmos",
+    "totalSeats": 60,
+    "availableSeats": 55
+  },
+  {
+    "id": "TH-BLR-02",
+    "name": "INOX Mantri Square 4K Insignia, Malleswaram",
+    "location": "Sampige Rd, Malleswaram, Bengaluru",
+    "city": "Bengaluru",
+    "screens": 8,
+    "soundSystem": "Dolby Atmos 7.1",
+    "totalSeats": 60,
+    "availableSeats": 51
+  },
+  {
+    "id": "TH-HYD-01",
+    "name": "Prasads Multiplex Large Screen 4K, Necklace Road",
+    "location": "NTR Gardens, Necklace Rd, Hyderabad",
+    "city": "Hyderabad",
+    "screens": 7,
+    "soundSystem": "Dual Barco 4K Dolby Atmos",
+    "totalSeats": 60,
+    "availableSeats": 58
+  },
+  {
+    "id": "TH-HYD-02",
+    "name": "AMB Cinemas Superplex VIP, Gachibowli",
+    "location": "Sarath City Capital Mall, Whitefields, Hyderabad",
+    "city": "Hyderabad",
+    "screens": 8,
+    "soundSystem": "Dolby Atmos & Laser RGB",
+    "totalSeats": 60,
+    "availableSeats": 49
+  },
+  {
+    "id": "TH-CHN-01",
+    "name": "Sathyam Cinemas (SPI), Royapettah",
+    "location": "Thiru-Vi-Ka Road, Royapettah, Chennai",
+    "city": "Chennai",
+    "screens": 6,
+    "soundSystem": "Dolby Atmos 64-Channel RDX",
+    "totalSeats": 60,
+    "availableSeats": 52
+  },
+  {
+    "id": "TH-CHN-02",
+    "name": "PVR IMAX & 4DX, VR Mall Anna Nagar",
+    "location": "Jawaharlal Nehru Rd, Anna Nagar, Chennai",
+    "city": "Chennai",
+    "screens": 10,
+    "soundSystem": "IMAX Laser 12-Channel Audio",
+    "totalSeats": 60,
+    "availableSeats": 46
+  },
+  {
+    "id": "TH-KOC-01",
+    "name": "PVR Superplex & 4DX, LuLu International Mall",
+    "location": "Edappally Junction, NH 66, Kochi",
+    "city": "Kochi",
+    "screens": 9,
+    "soundSystem": "4DX Dolby Atmos 7.1",
+    "totalSeats": 60,
+    "availableSeats": 53
+  },
+  {
+    "id": "TH-KOC-02",
+    "name": "Shenoys 4K Laser Christie Cineplex, MG Road",
+    "location": "Shenoys Junction, MG Road, Ernakulam, Kochi",
+    "city": "Kochi",
+    "screens": 5,
+    "soundSystem": "Christie 4K Laser Dolby Atmos",
+    "totalSeats": 60,
+    "availableSeats": 56
+  },
+  {
+    "id": "TH-KOL-01",
+    "name": "INOX Quest Mall Insignia & IMAX, Park Circus",
+    "location": "Syed Amir Ali Ave, Park Circus, Kolkata",
+    "city": "Kolkata",
+    "screens": 6,
+    "soundSystem": "IMAX Laser & Dolby Atmos",
+    "totalSeats": 60,
+    "availableSeats": 50
+  },
+  {
+    "id": "TH-PUN-01",
+    "name": "PVR Icon & Gold Class, The Pavillion Mall",
+    "location": "Senapati Bapat Rd, Shivajinagar, Pune",
+    "city": "Pune",
+    "screens": 6,
+    "soundSystem": "Dolby Atmos 7.1",
+    "totalSeats": 60,
+    "availableSeats": 52
+  },
+  {
+    "id": "TH-AHM-01",
+    "name": "Cinepolis Ahmedabad One 4DX & VIP, Vastrapur",
+    "location": "Alpha One Mall, Vastrapur, Ahmedabad",
+    "city": "Ahmedabad",
+    "screens": 9,
+    "soundSystem": "4DX 3D RealD Dolby",
+    "totalSeats": 60,
+    "availableSeats": 54
+  },
+  {
+    "id": "TH-CBE-01",
+    "name": "Broadway Mega Multiplex IMAX & EPIQ, Aerodrome Rd",
+    "location": "Avinashi Rd, Aerodrome Post, Coimbatore",
+    "city": "Coimbatore",
+    "screens": 9,
+    "soundSystem": "IMAX with Laser & Barco EPIQ",
+    "totalSeats": 60,
+    "availableSeats": 55
+  },
+  {
+    "id": "TH-MDU-01",
+    "name": "INOX Vishaal de Mal 4K Laser, Gokhale Road",
+    "location": "Chinna Chokkikulam, Madurai",
+    "city": "Madurai",
+    "screens": 5,
+    "soundSystem": "Barco 4K Dolby Atmos",
+    "totalSeats": 60,
+    "availableSeats": 51
+  },
+  {
     "id": "TH-DGL-01",
-    "name": "Umaa Rajendra Cinemas 4K RGB Laser Dolby Atmos, Dindigul",
+    "name": "Umaa Rajendra Cinemas 4K RGB Laser Dolby Atmos",
     "location": "Canara Colony, Dindigul",
     "city": "Dindigul",
     "screens": 4,
@@ -11,7 +181,7 @@
   },
   {
     "id": "TH-DGL-02",
-    "name": "Aarthi Grand Cineplex A/C 2K Dolby, Dindigul",
+    "name": "Aarthi Grand Cineplex A/C 2K Dolby",
     "location": "Aarthi Road, Dindigul",
     "city": "Dindigul",
     "screens": 3,
@@ -20,33 +190,23 @@
     "availableSeats": 48
   },
   {
-    "id": "TH-DGL-03",
-    "name": "Vijay Theatre Barco 4K Dolby 7.1, Dindigul",
-    "location": "Natham Road, Dindigul",
-    "city": "Dindigul",
-    "screens": 2,
-    "soundSystem": "Barco 4K Dolby 7.1",
+    "id": "TH-JAI-01",
+    "name": "INOX G-T Central Insignia & IMAX, Malviya Nagar",
+    "location": "Jawahar Lal Nehru Marg, Jaipur",
+    "city": "Jaipur",
+    "screens": 6,
+    "soundSystem": "IMAX Laser & Dolby Atmos",
     "totalSeats": 60,
-    "availableSeats": 55
+    "availableSeats": 53
   },
   {
-    "id": "TH-DGL-04",
-    "name": "J Cinemas 4K Dolby Atmos, Chinnalapatti",
-    "location": "Chinnalapatti, Dindigul",
-    "city": "Dindigul",
-    "screens": 2,
-    "soundSystem": "4K Dolby Atmos",
+    "id": "TH-CHD-01",
+    "name": "PVR Elante Mall 4DX & Gold Class, Industrial Area",
+    "location": "Elante Mall, Phase 1, Chandigarh",
+    "city": "Chandigarh",
+    "screens": 8,
+    "soundSystem": "4DX 3D Dolby Atmos",
     "totalSeats": 60,
-    "availableSeats": 50
-  },
-  {
-    "id": "TH-DGL-05",
-    "name": "Carnival Rajendra Screen 2, Dindigul",
-    "location": "Palani Road, Dindigul",
-    "city": "Dindigul",
-    "screens": 2,
-    "soundSystem": "2K Digital Dolby",
-    "totalSeats": 60,
-    "availableSeats": 58
+    "availableSeats": 54
   }
 ]

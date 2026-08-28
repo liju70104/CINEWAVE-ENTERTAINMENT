@@ -1,5 +1,5 @@
-// BookMyShow Dindigul - Movie Ticket Booking & Management System
-// Frontend Client Controller with Glassmorphism UI, Live Search, Trailer Modal, City Selector, Razorpay & Confetti
+// CineWave Entertainment - Pan-India Movie Ticket Booking & Management System
+// Frontend Client Controller with Glassmorphism UI, Live Search, Trailer Modal, Pan-India City Selector, Razorpay & Confetti
 
 document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) {
@@ -68,8 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
   tabSignIn?.addEventListener('click', () => {
     tabSignIn.classList.add('active');
     tabRegister?.classList.remove('active');
-    if (authTitle) authTitle.innerText = 'Sign In to Your Account';
-    if (authSub) authSub.innerText = 'Enter your credentials to book movie tickets, view M-Tickets, and unlock member discounts.';
+    if (authTitle) authTitle.innerText = 'Sign In to CineWave';
+    if (authSub) authSub.innerText = 'Enter your credentials to book movie tickets across India, view digital passes, and claim member discounts.';
     if (btnLoginText) btnLoginText.innerText = 'Sign In & Continue Booking';
   });
 
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tabRegister.classList.add('active');
     tabSignIn?.classList.remove('active');
     if (authTitle) authTitle.innerText = 'Create Your CineWave Account';
-    if (authSub) authSub.innerText = 'Register with your original credentials for instant M-Tickets and loyalty discounts.';
+    if (authSub) authSub.innerText = 'Register with your original credentials for instant M-Tickets and loyalty discounts across all Indian cities.';
     if (btnLoginText) btnLoginText.innerText = 'Create Account & Continue';
   });
 
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateUserProfileDisplay(name, username, role) {
     document.getElementById('header-user-name').innerText = name;
     document.getElementById('header-user-id').innerText = username;
-    const tierShort = role.split('(')[0].replace('Member', '').replace('BMS', '').trim();
+    const tierShort = role.split('(')[0].replace('Member', '').replace('CineWave', '').trim();
     document.getElementById('header-role-badge').innerText = tierShort || 'VIP';
 
     const nameInput = document.getElementById('cust-name');
@@ -167,16 +167,96 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.lucide) lucide.createIcons();
   });
 
+  // ================= PAN-INDIA THEATRES DATA =================
+  const panIndiaTheatres = {
+    'Mumbai': [
+      { id: 'TH-MUM-01', name: 'PVR INOX Palladium & IMAX, Lower Parel', format: 'IMAX Laser & Dolby Atmos' },
+      { id: 'TH-MUM-02', name: 'Cinepolis Viviana Megaplex 4DX & VIP, Thane', format: '4DX 3D & Dolby Atmos' },
+      { id: 'TH-MUM-03', name: 'PVR Superplex IMAX Phoenix Marketcity, Kurla', format: 'IMAX Laser 4K' }
+    ],
+    'Delhi-NCR': [
+      { id: 'TH-DEL-01', name: 'PVR Director\'s Cut & Gold Class, Vasant Kunj', format: 'Meyer Sound Dolby Atmos' },
+      { id: 'TH-DEL-02', name: 'Cinepolis DLF Avenue 4K Laser, Saket', format: 'RealD 3D Dolby Atmos' },
+      { id: 'TH-DEL-03', name: 'PVR Superplex Logix City Centre, Noida', format: 'IMAX & 4DX 4K Laser' }
+    ],
+    'Bengaluru': [
+      { id: 'TH-BLR-01', name: 'PVR Superplex & IMAX, Forum South Bengaluru', format: 'IMAX with Laser & Atmos' },
+      { id: 'TH-BLR-02', name: 'INOX Mantri Square 4K Insignia, Malleswaram', format: 'Dolby Atmos 7.1' },
+      { id: 'TH-BLR-03', name: 'Cinepolis Nexus Shantiniketan 4K, Whitefield', format: 'RealD 3D Barco' }
+    ],
+    'Hyderabad': [
+      { id: 'TH-HYD-01', name: 'Prasads Multiplex Large Screen 4K, Necklace Road', format: 'Dual Barco 4K Dolby Atmos' },
+      { id: 'TH-HYD-02', name: 'AMB Cinemas Superplex VIP, Gachibowli', format: 'Dolby Atmos & Laser RGB' },
+      { id: 'TH-HYD-03', name: 'PVR Next Galleria Mall, Panjagutta', format: '4K Dolby Atmos 7.1' }
+    ],
+    'Chennai': [
+      { id: 'TH-CHN-01', name: 'Sathyam Cinemas (SPI), Royapettah', format: 'Dolby Atmos 64-Channel RDX' },
+      { id: 'TH-CHN-02', name: 'PVR IMAX & 4DX, VR Mall Anna Nagar', format: 'IMAX Laser 12-Channel' },
+      { id: 'TH-CHN-03', name: 'Palazzo Cinepolis The Forum Vijaya Mall, Vadapalani', format: 'RealD 3D VIP Suite' }
+    ],
+    'Kochi': [
+      { id: 'TH-KOC-01', name: 'PVR Superplex & 4DX, LuLu International Mall', format: '4DX Dolby Atmos 7.1' },
+      { id: 'TH-KOC-02', name: 'Shenoys 4K Laser Christie Cineplex, MG Road', format: 'Christie 4K Laser Atmos' },
+      { id: 'TH-KOC-03', name: 'Cinepolis Centre Square Mall, MG Road', format: 'VIP RealD 3D' }
+    ],
+    'Kolkata': [
+      { id: 'TH-KOL-01', name: 'INOX Quest Mall Insignia & IMAX, Park Circus', format: 'IMAX Laser & Dolby Atmos' },
+      { id: 'TH-KOL-02', name: 'PVR Mani Square 4K Laser, EM Bypass', format: 'Dolby Atmos 7.1' }
+    ],
+    'Pune': [
+      { id: 'TH-PUN-01', name: 'PVR Icon & Gold Class, The Pavillion Mall', format: 'Dolby Atmos 7.1' },
+      { id: 'TH-PUN-02', name: 'Cinepolis Seasons Megaplex 4DX, Magarpatta', format: '4DX VIP Atmos' }
+    ],
+    'Ahmedabad': [
+      { id: 'TH-AHM-01', name: 'Cinepolis Ahmedabad One 4DX & VIP, Vastrapur', format: '4DX 3D RealD Dolby' },
+      { id: 'TH-AHM-02', name: 'PVR Acropolis Mall 4K Laser, Thaltej', format: 'Dolby Atmos 7.1' }
+    ],
+    'Coimbatore': [
+      { id: 'TH-CBE-01', name: 'Broadway Mega Multiplex IMAX & EPIQ, Aerodrome Rd', format: 'IMAX with Laser & EPIQ' },
+      { id: 'TH-CBE-02', name: 'The Cinema Brookefields Mall, Sukrawarpet', format: 'SPI 4K Dolby Atmos' }
+    ],
+    'Madurai': [
+      { id: 'TH-MDU-01', name: 'INOX Vishaal de Mal 4K Laser, Gokhale Road', format: 'Barco 4K Dolby Atmos' },
+      { id: 'TH-MDU-02', name: 'Jazz Cinemas Cine City 4K, Mattuthavani', format: 'Dolby Atmos 7.1' }
+    ],
+    'Dindigul': [
+      { id: 'TH-DGL-01', name: 'Umaa Rajendra Cinemas 4K RGB Laser Dolby Atmos', format: 'Dolby Atmos 7.1' },
+      { id: 'TH-DGL-02', name: 'Aarthi Grand Cineplex A/C 2K Dolby', format: '2K Dolby Surround' },
+      { id: 'TH-DGL-03', name: 'Vijay Theatre Barco 4K Dolby 7.1', format: 'Barco 4K Dolby 7.1' },
+      { id: 'TH-DGL-04', name: 'J Cinemas 4K Dolby Atmos, Chinnalapatti', format: '4K Dolby Atmos' }
+    ],
+    'Jaipur': [
+      { id: 'TH-JAI-01', name: 'INOX G-T Central Insignia & IMAX, Malviya Nagar', format: 'IMAX Laser & Dolby Atmos' },
+      { id: 'TH-JAI-02', name: 'Cinepolis World Trade Park 4K, JLN Marg', format: 'Dolby Atmos 7.1' }
+    ],
+    'Chandigarh': [
+      { id: 'TH-CHD-01', name: 'PVR Elante Mall 4DX & Gold Class, Industrial Area', format: '4DX 3D Dolby Atmos' },
+      { id: 'TH-CHD-02', name: 'Cinepolis Jagat Mall 4K Laser, Sector 17', format: 'RealD 3D Atmos' }
+    ]
+  };
+
+  function populateTheatresForCity(cityName) {
+    const theatreSelect = document.getElementById('theatre-select');
+    if (!theatreSelect) return;
+
+    const list = panIndiaTheatres[cityName] || panIndiaTheatres['Mumbai'];
+    theatreSelect.innerHTML = list.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+    
+    if (list.length > 0) {
+      state.movie.theatre = list[0].name;
+    }
+  }
+
   // ================= BOOKING & WALLET STATE =================
   const state = {
-    bookingRef: `BMS-DGL-${Math.floor(1000 + Math.random() * 9000)}`,
+    bookingRef: `CW-MUM-${Math.floor(1000 + Math.random() * 9000)}`,
     razorpayPaymentId: '',
     razorpayOrderId: '',
     status: 'In-Progress',
     currentStage: 1,
-    city: 'Dindigul',
+    city: 'Mumbai',
     totalSeatsCapacity: 60,
-    availableSeats: 52,
+    availableSeats: 54,
     selectedSeats: ['E5', 'E6'],
     ticketQty: 2,
     baseUnitPrice: 190.00,
@@ -190,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'snack-01': { name: 'Jumbo Caramel Popcorn', price: 220, qty: 0 },
       'snack-02': { name: 'Nachos Supreme & Cheese', price: 180, qty: 0 },
       'snack-03': { name: 'Duo Chilled Coke', price: 140, qty: 0 },
-      'snack-04': { name: 'Dindigul Cold Coffee', price: 120, qty: 0 }
+      'snack-04': { name: 'CineWave Cold Coffee', price: 120, qty: 0 }
     },
     concessionsTotal: 0,
     totalAmount: 348.84,
@@ -204,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'MOV-DGL-01',
       title: 'Amaran',
       poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60',
-      theatre: 'Umaa Rajendra Cinemas 4K RGB Laser Dolby Atmos, Dindigul',
+      theatre: 'PVR INOX Palladium & IMAX, Lower Parel',
       date: today,
       time: '06:30 PM',
       type: 'Dolby Atmos 4K',
@@ -215,13 +295,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     walletTickets: [
       {
-        ref: 'BMS-DGL-9281',
+        ref: 'CW-MUM-9281',
         movie: 'Amaran',
         poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60',
-        theatre: 'Umaa Rajendra Cinemas 4K Laser, Dindigul',
+        theatre: 'PVR INOX Palladium & IMAX, Mumbai',
         date: today,
         time: '06:30 PM',
-        format: 'TAMIL • 4K RGB LASER DOLBY ATMOS',
+        format: 'PAN-INDIA • 4K RGB LASER DOLBY ATMOS',
         seats: ['E5', 'E6'],
         seatClass: 'GOLD FIRST CLASS',
         qty: 2,
@@ -232,17 +312,17 @@ document.addEventListener('DOMContentLoaded', () => {
         customerPhone: '+91 98421 78901',
         snacks: 'Jumbo Caramel Popcorn (x1)',
         paymentMethod: 'Razorpay UPI (Google Pay)',
-        rzpId: 'pay_RP_DGL_94821',
+        rzpId: 'pay_RP_IND_94821',
         scanned: false
       },
       {
-        ref: 'BMS-DGL-7714',
+        ref: 'CW-BLR-7714',
         movie: 'GOAT - The Greatest Of All Time',
         poster: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=60',
-        theatre: 'Aarthi Grand Cineplex A/C 2K, Dindigul',
+        theatre: 'PVR Superplex IMAX, Forum South Bengaluru',
         date: tomorrow,
         time: '02:00 PM',
-        format: 'TAMIL • 2K DOLBY 7.1',
+        format: 'TAMIL/HINDI • 4K IMAX LASER',
         seats: ['H8', 'H9'],
         seatClass: 'BALCONY / DIAMOND',
         qty: 2,
@@ -253,17 +333,17 @@ document.addEventListener('DOMContentLoaded', () => {
         customerPhone: '+91 98421 78901',
         snacks: 'None',
         paymentMethod: 'Razorpay Cards (Visa)',
-        rzpId: 'pay_RP_DGL_63112',
+        rzpId: 'pay_RP_IND_63112',
         scanned: false
       },
       {
-        ref: 'BMS-DGL-4520',
+        ref: 'CW-CHN-4520',
         movie: 'Vettaiyan',
         poster: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&auto=format&fit=crop&q=60',
-        theatre: 'Vijay Theatre Barco 4K, Dindigul',
+        theatre: 'Sathyam Cinemas (SPI), Royapettah, Chennai',
         date: '2026-08-27',
         time: '09:45 PM',
-        format: 'TAMIL • DOLBY 7.1',
+        format: 'TAMIL • DOLBY ATMOS 64-CH',
         seats: ['D4'],
         seatClass: 'GOLD CLASS',
         qty: 1,
@@ -274,11 +354,14 @@ document.addEventListener('DOMContentLoaded', () => {
         customerPhone: '+91 98421 78901',
         snacks: 'None',
         paymentMethod: 'Razorpay UPI (PhonePe)',
-        rzpId: 'pay_RP_DGL_10940',
+        rzpId: 'pay_RP_IND_10940',
         scanned: true
       }
     ]
   };
+
+  // Initial theatre populate
+  populateTheatresForCity('Mumbai');
 
   // Sync wallet from backend API if available
   async function syncWalletFromBackend() {
@@ -315,9 +398,9 @@ document.addEventListener('DOMContentLoaded', () => {
       
       let matchesGenre = true;
       if (selectedGenre === 'Action') matchesGenre = genre.includes('action');
-      else if (selectedGenre === 'Tamil') matchesGenre = lang.includes('tamil');
+      else if (selectedGenre === 'Tamil') matchesGenre = lang.includes('tamil') || lang.includes('hindi');
       else if (selectedGenre === 'Sci-Fi') matchesGenre = genre.includes('sci-fi');
-      else if (selectedGenre === 'Laser') matchesGenre = lang.includes('laser') || lang.includes('atmos');
+      else if (selectedGenre === 'Laser') matchesGenre = lang.includes('laser') || lang.includes('atmos') || lang.includes('imax');
 
       if (matchesQuery && matchesGenre) {
         card.style.display = 'flex';
@@ -346,22 +429,41 @@ document.addEventListener('DOMContentLoaded', () => {
     setStage(1, 'Select Movie & Seats');
   });
 
-  // ================= CITY SELECTOR MODAL =================
+  // ================= PAN-INDIA CITY SELECTOR MODAL & SEARCH =================
   const cityModal = document.getElementById('city-modal');
   const btnCityPicker = document.getElementById('btn-city-picker');
   const btnCloseCityModal = document.getElementById('btn-close-city-modal');
   const cityCards = document.querySelectorAll('.city-card');
+  const citySearchInput = document.getElementById('city-search-input');
   const currentCityText = document.getElementById('current-city');
   const bannerCityLabel = document.getElementById('banner-city-label');
   const tktCityBadge = document.getElementById('tkt-city-badge');
 
   btnCityPicker?.addEventListener('click', () => {
     cityModal?.classList.remove('hidden');
+    if (citySearchInput) {
+      citySearchInput.value = '';
+      citySearchInput.focus();
+    }
+    cityCards.forEach(c => c.style.display = 'block');
     if (window.lucide) lucide.createIcons();
   });
 
   btnCloseCityModal?.addEventListener('click', () => {
     cityModal?.classList.add('hidden');
+  });
+
+  citySearchInput?.addEventListener('input', () => {
+    const q = citySearchInput.value.trim().toLowerCase();
+    cityCards.forEach(card => {
+      const cityName = (card.dataset.city || '').toLowerCase();
+      const stateName = (card.dataset.state || '').toLowerCase();
+      if (!q || cityName.includes(q) || stateName.includes(q)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
   });
 
   cityCards.forEach(card => {
@@ -374,6 +476,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentCityText) currentCityText.innerText = selectedCity;
       if (bannerCityLabel) bannerCityLabel.innerText = `In Cinemas in ${selectedCity}`;
       if (tktCityBadge) tktCityBadge.innerText = `${selectedCity.toUpperCase()} MULTIPLEX`;
+
+      populateTheatresForCity(selectedCity);
 
       cityModal?.classList.add('hidden');
     });
@@ -391,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
       title: 'Amaran',
       poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60',
       genre: 'Action / Biography / Drama',
-      lang: 'Tamil (2D, Dolby Atmos)',
+      lang: 'Tamil, Hindi, Telugu (2D, Dolby Atmos)',
       rating: '9.4/10 (128K Votes)',
       cert: 'UA 16+',
       cast: ['Sivakarthikeyan', 'Sai Pallavi', 'Bhuvan Arora', 'Rahul Bose'],
@@ -401,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
       title: 'The Greatest of All Time (GOAT)',
       poster: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=60',
       genre: 'Action / Sci-Fi / Thriller',
-      lang: 'Tamil, Telugu',
+      lang: 'Tamil, Hindi, Telugu',
       rating: '8.9/10 (95K Votes)',
       cert: 'UA',
       cast: ['Thalapathy Vijay', 'Prashanth', 'Prabhu Deva', 'Sneha', 'Meenakshi'],
@@ -411,7 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
       title: 'Vettaiyan',
       poster: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&auto=format&fit=crop&q=60',
       genre: 'Action / Police Drama',
-      lang: 'Tamil (Dolby 7.1)',
+      lang: 'Tamil, Hindi, Telugu (Dolby Atmos)',
       rating: '8.6/10 (81K Votes)',
       cert: 'UA',
       cast: ['Superstar Rajinikanth', 'Amitabh Bachchan', 'Fahadh Faasil', 'Rana Daggubati', 'Manju Warrier'],
@@ -421,7 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
       title: 'Interstellar (Re-Release 4K)',
       poster: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&auto=format&fit=crop&q=60',
       genre: 'Sci-Fi / Adventure',
-      lang: 'English (4K RGB Laser)',
+      lang: 'English, Hindi (4K Laser IMAX)',
       rating: '9.6/10 (240K Votes)',
       cert: 'UA',
       cast: ['Matthew McConaughey', 'Anne Hathaway', 'Jessica Chastain', 'Michael Caine'],
@@ -465,7 +569,6 @@ document.addEventListener('DOMContentLoaded', () => {
   btnModalBookThisMovie?.addEventListener('click', () => {
     if (!activeModalMovie) return;
     
-    // Select this movie in grid
     movieCards.forEach(c => {
       if (c.dataset.movieId === activeModalMovie.id) {
         c.classList.add('selected');
@@ -710,8 +813,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="snack-tag veg">Beverage</span>
         </div>
         <div class="snack-info">
-          <h4>Special Iced Filter Coffee</h4>
-          <p>Traditional South Indian degree decoction blend with creamy milk.</p>
+          <h4>CineWave Special Iced Coffee</h4>
+          <p>Traditional degree decoction blend with creamy milk & chocolate dust.</p>
           <div class="snack-footer">
             <span class="snack-price">₹120</span>
             <span class="badge badge-green"><i data-lucide="coffee"></i> Premium Brew</span>
@@ -997,15 +1100,15 @@ document.addEventListener('DOMContentLoaded', () => {
           <p><strong>Audio-Visual:</strong> 4K RGB Laser + Custom Dolby Surround calibration.</p>
         `;
       }
-    } else if (state.movie.type.includes('4K') || state.movie.type.includes('Atmos')) {
-      if (routeHeadline) routeHeadline.innerText = '4K RGB Laser & Dolby Atmos 7.1 Immersive Sound';
+    } else if (state.movie.type.includes('IMAX') || state.movie.type.includes('4K') || state.movie.type.includes('Atmos')) {
+      if (routeHeadline) routeHeadline.innerText = 'IMAX Laser & Dolby Atmos 7.1 Immersive Sound';
       if (routeDesc) routeDesc.innerText = 'Multi-channel overhead surround speakers and high-contrast Barco laser projection.';
       if (icon) icon.innerHTML = '<i data-lucide="volume-2"></i>';
       if (routeDetails) {
         routeDetails.innerHTML = `
-          <p><strong>Screen Type:</strong> <code>4K RGB Curved Laser Screen</code></p>
+          <p><strong>Screen Type:</strong> <code>IMAX 4K RGB Curved Laser Screen</code></p>
           <p><strong>Sound Format:</strong> <code>64-Channel Dolby Atmos 3D Audio</code></p>
-          <p><strong>Auditorium:</strong> Main Screen 1, Umaa Rajendra Cinemas.</p>
+          <p><strong>Auditorium:</strong> ${state.movie.theatre}.</p>
         `;
       }
     } else {
@@ -1119,11 +1222,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Open Razorpay Checkout Modal
   btnOpenRazorpay?.addEventListener('click', async () => {
     if (!document.getElementById('chk-policy').checked) {
-      alert('Please agree to the BookMyShow admission terms.');
+      alert('Please agree to the CineWave Entertainment admission terms.');
       return;
     }
 
-    let orderId = `order_RP_DGL_${Math.floor(100000 + Math.random() * 900000)}`;
+    let orderId = `order_RP_IND_${Math.floor(100000 + Math.random() * 900000)}`;
     try {
       const res = await fetch('/api/payment/create-order', {
         method: 'POST',
@@ -1206,7 +1309,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (loaderTitle) loaderTitle.innerText = 'Verifying 256-bit Security Signature...';
       if (loaderDesc) loaderDesc.innerText = 'Payment verified with RBI-approved Banking Switch';
 
-      const paymentId = `pay_RP_DGL_${Math.floor(100000 + Math.random() * 900000)}`;
+      const paymentId = `pay_RP_IND_${Math.floor(100000 + Math.random() * 900000)}`;
       state.razorpayPaymentId = paymentId;
 
       try {
@@ -1289,9 +1392,11 @@ document.addEventListener('DOMContentLoaded', () => {
   async function completeBookingFlow(paymentId, payMethod) {
     if (state.holdInterval) clearInterval(state.holdInterval);
 
-    const refCode = `BMS-DGL-${Math.floor(10000 + Math.random() * 90000)}`;
+    const cityPrefix = (state.city.slice(0, 3)).toUpperCase();
+    const refCode = `CW-${cityPrefix}-${Math.floor(10000 + Math.random() * 90000)}`;
+    
     document.getElementById('tkt-movie').innerText = state.movie.title;
-    document.getElementById('tkt-type').innerText = `TAMIL • ${state.movie.type.toUpperCase()}`;
+    document.getElementById('tkt-type').innerText = `PAN-INDIA • ${state.movie.type.toUpperCase()}`;
     document.getElementById('tkt-theatre').innerText = state.movie.theatre;
     document.getElementById('tkt-datetime').innerText = `${state.movie.date} | ${state.movie.time}`;
     document.getElementById('tkt-seats').innerText = `${state.selectedSeats.join(', ')} (${state.movie.seatClass.split('(')[0]})`;
@@ -1325,7 +1430,7 @@ document.addEventListener('DOMContentLoaded', () => {
       theatre: state.movie.theatre,
       date: state.movie.date,
       time: state.movie.time,
-      format: `TAMIL • ${state.movie.type.toUpperCase()}`,
+      format: `PAN-INDIA • ${state.movie.type.toUpperCase()}`,
       seats: [...state.selectedSeats],
       seatClass: state.movie.seatClass,
       qty: state.ticketQty,
@@ -1358,7 +1463,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // START NEW BOOKING
   document.getElementById('btn-start-new-case')?.addEventListener('click', () => {
-    state.bookingRef = `BMS-DGL-${Math.floor(1000 + Math.random() * 9000)}`;
+    const cityPrefix = (state.city.slice(0, 3)).toUpperCase();
+    state.bookingRef = `CW-${cityPrefix}-${Math.floor(1000 + Math.random() * 9000)}`;
     document.getElementById('case-id-display').innerText = state.bookingRef;
     setStage(1, 'Select Movie & Seats');
   });
@@ -1407,7 +1513,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span><i data-lucide="calendar"></i> ${tkt.date} &bull; ${tkt.time}</span>
               <span><i data-lucide="armchair"></i> Seats: <strong>${tkt.seats.join(', ')}</strong> (${tkt.qty} Tickets)</span>
             </div>
-            ${tkt.paymentMethod ? `<p style="font-size: 0.75rem; color: #60a5fa;"><i data-lucide="credit-card"></i> ${tkt.paymentMethod} &bull; Ref: ${tkt.rzpId || 'pay_RP_DGL_94821'}</p>` : ''}
+            ${tkt.paymentMethod ? `<p style="font-size: 0.75rem; color: #60a5fa;"><i data-lucide="credit-card"></i> ${tkt.paymentMethod} &bull; Ref: ${tkt.rzpId || 'pay_RP_IND_94821'}</p>` : ''}
             ${tkt.snacks && tkt.snacks !== 'None' ? `<p style="font-size: 0.78rem; color: var(--accent-amber);"><i data-lucide="popcorn"></i> Snacks: ${tkt.snacks}</p>` : ''}
           </div>
 
@@ -1558,7 +1664,7 @@ document.addEventListener('DOMContentLoaded', () => {
     container.innerHTML = `
       <div class="bms-m-ticket" style="margin-bottom: 0;">
         <div class="ticket-top-banner">
-          <div class="bms-tkt-logo">book<span>my</span>show</div>
+          <div class="bms-tkt-logo">Cine<span>Wave</span> ENTERTAINMENT</div>
           <span class="tkt-badge-city">${state.city.toUpperCase()} MULTIPLEX</span>
         </div>
 
@@ -1593,7 +1699,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <div class="razorpay-verified-stamp">
               <i data-lucide="check-circle"></i>
-              <span>Paid via Razorpay (${tkt.paymentMethod || 'UPI/Card'} &bull; ${tkt.rzpId || 'pay_RP_DGL_94821'})</span>
+              <span>Paid via Razorpay (${tkt.paymentMethod || 'UPI/Card'} &bull; ${tkt.rzpId || 'pay_RP_IND_94821'})</span>
             </div>
           </div>
 

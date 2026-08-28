@@ -61,9 +61,9 @@ function parseBody(req) {
 
 // Gate Scanner Log in Memory & State
 const gateAuditLogs = [
-  { time: '06:12:45 PM', ref: 'BMS-DGL-4520', action: 'ADMIT 1', seats: 'D4', status: 'OK', gate: 'Turnstile A' },
-  { time: '06:05:10 PM', ref: 'BMS-DGL-3112', action: 'ADMIT 4', seats: 'B1-B4', status: 'OK', gate: 'Turnstile B' },
-  { time: '05:58:22 PM', ref: 'BMS-DGL-1090', action: 'ADMIT 2', seats: 'F1, F2', status: 'OK', gate: 'Turnstile A' }
+  { time: '06:12:45 PM', ref: 'CW-MUM-4520', action: 'ADMIT 1', seats: 'D4', status: 'OK', gate: 'Turnstile A' },
+  { time: '06:05:10 PM', ref: 'CW-BLR-3112', action: 'ADMIT 4', seats: 'B1-B4', status: 'OK', gate: 'Turnstile B' },
+  { time: '05:58:22 PM', ref: 'CW-CHN-1090', action: 'ADMIT 2', seats: 'F1, F2', status: 'OK', gate: 'Turnstile A' }
 ];
 
 // MIME types for static frontend assets
@@ -80,7 +80,7 @@ const MIME_TYPES = {
 
 // Create Server
 const server = http.createServer(async (req, res) => {
-  const parsedUrl = url.parse(req.url, true);
+  const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const pathname = parsedUrl.pathname;
   const method = req.method;
 
@@ -99,7 +99,7 @@ const server = http.createServer(async (req, res) => {
 
   // 1. Health Check
   if (method === 'GET' && pathname === '/api/health') {
-    return sendJSON(res, 200, { status: 'OK', service: 'CineWave Backend API', uptime: process.uptime() });
+    return sendJSON(res, 200, { status: 'OK', service: 'CineWave Entertainment Backend API', uptime: process.uptime() });
   }
 
   // 2. Movies Catalog
@@ -108,9 +108,13 @@ const server = http.createServer(async (req, res) => {
     return sendJSON(res, 200, { success: true, count: movies.length, data: movies });
   }
 
-  // 3. Theatres Catalog
+  // 3. Theatres Catalog with Optional City Filter
   if (method === 'GET' && pathname === '/api/theatres') {
-    const theatres = readData('theatres.json');
+    let theatres = readData('theatres.json');
+    const cityParam = parsedUrl.searchParams.get('city');
+    if (cityParam) {
+      theatres = theatres.filter(t => t.city.toLowerCase() === cityParam.toLowerCase());
+    }
     return sendJSON(res, 200, { success: true, count: theatres.length, data: theatres });
   }
 
@@ -120,273 +124,243 @@ const server = http.createServer(async (req, res) => {
     return sendJSON(res, 200, { success: true, data: concessions });
   }
 
-  // 5. Promo Code Validation
+  // 5. Promo Codes
+  if (method === 'GET' && pathname === '/api/promos') {
+    const promos = readData('promos.json');
+    return sendJSON(res, 200, { success: true, count: promos.length, data: promos });
+  }
+
   if (method === 'POST' && pathname === '/api/promos/validate') {
     const body = await parseBody(req);
-    const code = (body.code || '').trim().toUpperCase();
+    const code = (body.code || '').toUpperCase().trim();
     const promos = readData('promos.json');
-    const match = promos.find(p => p.code === code);
+    const promo = promos.find(p => p.code === code && p.active);
 
-    if (match) {
-      return sendJSON(res, 200, { success: true, valid: true, promo: match });
+    if (promo) {
+      return sendJSON(res, 200, { success: true, valid: true, promo });
     } else {
-      return sendJSON(res, 400, { success: false, valid: false, message: 'Invalid promo code' });
+      return sendJSON(res, 400, { success: false, valid: false, message: 'Invalid or expired coupon code' });
     }
   }
 
-  // 6. Bookings Wallet & Ledger
-  if (method === 'GET' && (pathname === '/api/bookings' || pathname === '/api/wallet')) {
+  // 6. Pricing Calculation Engine
+  if (method === 'POST' && pathname === '/api/pricing/calculate') {
+    const body = await parseBody(req);
+    const { basePrice = 190, quantity = 2, tier = 'Platinum', promoCode = '', concessionsTotal = 0 } = body;
+
+    const subtotal = basePrice * quantity;
+    const convenienceFee = subtotal * 0.10;
+    const convenienceTax = convenienceFee * 0.18;
+    const foodGst = concessionsTotal * 0.05;
+
+    let tierDiscountPercent = 0;
+    if (tier === 'Platinum') tierDiscountPercent = 0.20;
+    else if (tier === 'Gold') tierDiscountPercent = 0.10;
+    else if (tier === 'Silver') tierDiscountPercent = 0.05;
+
+    const loyaltyDiscount = subtotal * tierDiscountPercent;
+
+    let promoDiscount = 0;
+    if (promoCode.includes('DIN20') || promoCode.includes('20%')) {
+      promoDiscount = subtotal * 0.20;
+    } else if (promoCode.includes('BMS50')) {
+      promoDiscount = Math.min(50, subtotal);
+    } else if (promoCode.includes('SUPERSTAR')) {
+      promoDiscount = subtotal * 0.15;
+    }
+
+    const total = Math.max(0, subtotal + convenienceFee + convenienceTax + concessionsTotal + foodGst - loyaltyDiscount - promoDiscount);
+
+    return sendJSON(res, 200, {
+      success: true,
+      breakdown: {
+        basePrice,
+        quantity,
+        subtotal,
+        convenienceFee,
+        convenienceTax,
+        concessionsTotal,
+        foodGst,
+        loyaltyDiscount,
+        promoDiscount,
+        total: parseFloat(total.toFixed(2))
+      }
+    });
+  }
+
+  // 7. Bookings Management (Ticket Wallet)
+  if (method === 'GET' && pathname === '/api/wallet' || method === 'GET' && pathname === '/api/bookings') {
     const bookings = readData('bookings.json');
     return sendJSON(res, 200, { success: true, count: bookings.length, data: bookings });
   }
 
-  // 7. Create New Booking
   if (method === 'POST' && pathname === '/api/bookings') {
-    const body = await parseBody(req);
+    const newBooking = await parseBody(req);
     const bookings = readData('bookings.json');
-
-    const ref = `BMS-DGL-${Math.floor(10000 + Math.random() * 90000)}`;
-    const newBooking = {
-      ref: ref,
-      movie: body.movie || 'Amaran',
-      poster: body.poster || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60',
-      theatre: body.theatre || 'Umaa Rajendra Cinemas 4K Laser, Dindigul',
-      date: body.date || new Date().toISOString().split('T')[0],
-      time: body.time || '06:30 PM',
-      format: body.format || 'TAMIL • 4K RGB LASER DOLBY ATMOS',
-      seats: body.seats || ['E5', 'E6'],
-      seatClass: body.seatClass || 'GOLD FIRST CLASS',
-      qty: body.qty || 2,
-      paid: body.paid || 348.84,
-      status: 'Confirmed',
-      customerName: body.customerName || 'Senthil Kumar',
-      customerEmail: body.customerEmail || 'senthil.kumar@gmail.com',
-      customerPhone: body.customerPhone || '+91 98421 78901',
-      snacks: body.snacks || 'None',
-      scanned: false,
-      createdAt: new Date().toISOString()
-    };
-
     bookings.unshift(newBooking);
     writeData('bookings.json', bookings);
-
     return sendJSON(res, 201, { success: true, message: 'Booking confirmed', data: newBooking });
   }
 
-  // 8. Single Booking Lookup
-  const bookingMatch = pathname.match(/^\/api\/bookings\/([A-Z0-9-]+)$/);
-  if (method === 'GET' && bookingMatch) {
-    const ref = bookingMatch[1];
+  // Cancel Booking Endpoint
+  if (method === 'POST' && pathname.startsWith('/api/bookings/') && pathname.endsWith('/cancel')) {
+    const ref = pathname.split('/')[3];
     const bookings = readData('bookings.json');
-    const tkt = bookings.find(b => b.ref.toUpperCase() === ref.toUpperCase());
+    const booking = bookings.find(b => b.ref === ref);
 
-    if (tkt) {
-      return sendJSON(res, 200, { success: true, data: tkt });
+    if (booking) {
+      booking.status = 'Cancelled - Refunded';
+      writeData('bookings.json', bookings);
+      const refundAmount = booking.paid * 0.8;
+      return sendJSON(res, 200, { success: true, message: `Booking ${ref} cancelled`, refundAmount });
     } else {
       return sendJSON(res, 404, { success: false, message: 'Booking not found' });
     }
   }
 
-  // 9. Cancel Booking with SLA Refund Calculation
-  const cancelMatch = pathname.match(/^\/api\/bookings\/([A-Z0-9-]+)\/cancel$/);
-  if (method === 'POST' && cancelMatch) {
-    const ref = cancelMatch[1];
-    const bookings = readData('bookings.json');
-    const tktIndex = bookings.findIndex(b => b.ref.toUpperCase() === ref.toUpperCase());
-
-    if (tktIndex === -1) {
-      return sendJSON(res, 404, { success: false, message: 'Booking not found' });
-    }
-
-    const tkt = bookings[tktIndex];
-    if (tkt.status.includes('Cancelled')) {
-      return sendJSON(res, 400, { success: false, message: 'Ticket is already cancelled' });
-    }
-
-    // 80% SLA refund calculation
-    const deduction = tkt.paid * 0.20;
-    const netRefund = tkt.paid * 0.80;
-
-    tkt.status = 'Cancelled - Refunded';
-    tkt.refundAmount = netRefund;
-    tkt.cancelledAt = new Date().toISOString();
-
-    bookings[tktIndex] = tkt;
-    writeData('bookings.json', bookings);
-
-    // Add entry to gate audit log
-    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    gateAuditLogs.unshift({
-      time: timeStr,
-      ref: tkt.ref,
-      action: 'CANCELLED & REFUNDED',
-      seats: tkt.seats.join(', '),
-      status: `Refund ₹${netRefund.toFixed(2)}`,
-      gate: 'Online Portal'
-    });
-
-    return sendJSON(res, 200, {
-      success: true,
-      message: 'Booking cancelled successfully',
-      refund: {
-        originalPaid: tkt.paid,
-        deduction: deduction,
-        netRefund: netRefund,
-        refundDestination: 'UPI/Card (15 mins)'
-      },
-      data: tkt
-    });
-  }
-
-  // 10. Reschedule Showtime
-  const reschedMatch = pathname.match(/^\/api\/bookings\/([A-Z0-9-]+)\/reschedule$/);
-  if (method === 'POST' && reschedMatch) {
-    const ref = reschedMatch[1];
+  // Reschedule Booking Endpoint
+  if (method === 'POST' && pathname.startsWith('/api/bookings/') && pathname.endsWith('/reschedule')) {
+    const ref = pathname.split('/')[3];
     const body = await parseBody(req);
     const bookings = readData('bookings.json');
-    const tktIndex = bookings.findIndex(b => b.ref.toUpperCase() === ref.toUpperCase());
+    const booking = bookings.find(b => b.ref === ref);
 
-    if (tktIndex === -1) {
+    if (booking) {
+      if (body.date) booking.date = body.date;
+      if (body.time) booking.time = body.time;
+      writeData('bookings.json', bookings);
+      return sendJSON(res, 200, { success: true, message: `Booking ${ref} rescheduled`, data: booking });
+    } else {
       return sendJSON(res, 404, { success: false, message: 'Booking not found' });
     }
-
-    const tkt = bookings[tktIndex];
-    if (body.date) tkt.date = body.date;
-    if (body.time) tkt.time = body.time;
-    tkt.rescheduledAt = new Date().toISOString();
-
-    bookings[tktIndex] = tkt;
-    writeData('bookings.json', bookings);
-
-    return sendJSON(res, 200, { success: true, message: 'Showtime rescheduled successfully', data: tkt });
   }
 
-  // 11. Gate Scanner Validation
+  // 8. Gate Scanner Simulator Endpoint
   if (method === 'POST' && pathname === '/api/scanner/validate') {
     const body = await parseBody(req);
-    const ref = (body.ref || '').trim().toUpperCase();
+    const ref = (body.ref || '').toUpperCase().trim();
     const bookings = readData('bookings.json');
-    const tkt = bookings.find(b => b.ref.toUpperCase() === ref);
-    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const booking = bookings.find(b => b.ref === ref);
 
-    if (!tkt) {
-      gateAuditLogs.unshift({ time: timeStr, ref: ref, action: 'DENIED', seats: 'N/A', status: 'Invalid Code', gate: 'Gate 1' });
-      return sendJSON(res, 200, { status: 'INVALID', message: 'Pass not found in ticketing database', ref: ref });
+    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    if (!booking) {
+      gateAuditLogs.unshift({ time: now, ref, action: 'DENIED', seats: 'N/A', status: 'INVALID_PASS', gate: 'Turnstile A' });
+      return sendJSON(res, 404, { success: false, status: 'INVALID', message: 'Ticket reference not found' });
     }
 
-    if (tkt.status.includes('Cancelled') || tkt.status.includes('Refunded')) {
-      gateAuditLogs.unshift({ time: timeStr, ref: ref, action: 'DENIED', seats: tkt.seats.join(', '), status: 'Cancelled/Refunded', gate: 'Gate 1' });
-      return sendJSON(res, 200, { status: 'REFUNDED', message: 'This ticket was cancelled and refunded. Admission denied.', data: tkt });
+    if (booking.status.includes('Cancelled') || booking.status.includes('Refunded')) {
+      gateAuditLogs.unshift({ time: now, ref, action: 'DENIED', seats: booking.seats.join(', '), status: 'REFUNDED_PASS', gate: 'Turnstile A' });
+      return sendJSON(res, 400, { success: false, status: 'REFUNDED', message: 'Ticket has been cancelled and refunded', data: booking });
     }
 
-    if (tkt.scanned) {
-      gateAuditLogs.unshift({ time: timeStr, ref: ref, action: 'DUPLICATE', seats: tkt.seats.join(', '), status: 'Already Scanned', gate: 'Gate 1' });
-      return sendJSON(res, 200, { status: 'ALREADY_SCANNED', message: 'Ticket already validated earlier at gate', data: tkt });
+    if (booking.scanned) {
+      gateAuditLogs.unshift({ time: now, ref, action: 'DUPLICATE', seats: booking.seats.join(', '), status: 'ALREADY_SCANNED', gate: 'Turnstile A' });
+      return sendJSON(res, 409, { success: false, status: 'ALREADY_SCANNED', message: 'Ticket already validated earlier', data: booking });
     }
 
-    // Mark as scanned
-    tkt.scanned = true;
+    booking.scanned = true;
     writeData('bookings.json', bookings);
-    gateAuditLogs.unshift({ time: timeStr, ref: ref, action: `ADMIT ${tkt.qty}`, seats: tkt.seats.join(', '), status: 'OK', gate: 'Turnstile A' });
-
-    return sendJSON(res, 200, { status: 'VALID', message: 'Admission granted', data: tkt });
+    gateAuditLogs.unshift({ time: now, ref, action: `ADMIT ${booking.qty}`, seats: booking.seats.join(', '), status: 'OK', gate: 'Turnstile A' });
+    return sendJSON(res, 200, { success: true, status: 'VALID', message: 'Admission granted', data: booking });
   }
 
-  // 12. Razorpay Payment Gateway Endpoints
-  if (method === 'POST' && pathname === '/api/payment/create-order') {
-    const body = await parseBody(req);
-    const amount = body.amount || 348.84;
-    const orderId = `order_RP_DGL_${Math.floor(100000 + Math.random() * 900000)}`;
-
-    return sendJSON(res, 200, {
-      success: true,
-      keyId: 'rzp_test_CineWaveDGL_2026',
-      orderId: orderId,
-      amount: Math.round(amount * 100), // in paise
-      currency: 'INR',
-      merchantName: 'CineWave Entertainment (BookMyShow Dindigul)',
-      description: `Movie Tickets Reservation - ${body.movie || 'Cinema Booking'}`
-    });
-  }
-
-  if (method === 'POST' && pathname === '/api/payment/verify') {
-    const body = await parseBody(req);
-    const paymentId = body.paymentId || `pay_RP_DGL_${Math.floor(100000 + Math.random() * 900000)}`;
-    const orderId = body.orderId || `order_RP_DGL_${Math.floor(100000 + Math.random() * 900000)}`;
-
-    return sendJSON(res, 200, {
-      success: true,
-      verified: true,
-      paymentId: paymentId,
-      orderId: orderId,
-      method: body.method || 'UPI (Google Pay)',
-      timestamp: new Date().toISOString(),
-      message: 'Payment successfully verified via Razorpay 256-bit secure gateway.'
-    });
-  }
-
-  // 13. Manager Analytics & Metrics
+  // 9. Manager Metrics & Gate Logs
   if (method === 'GET' && pathname === '/api/manager/metrics') {
     const bookings = readData('bookings.json');
     let totalRevenue = 148920;
     let totalSold = 684;
-    let concessionsSales = 34250;
 
     bookings.forEach(b => {
       if (b.status === 'Confirmed' || b.status === 'Attended') {
-        totalRevenue += b.paid;
-        totalSold += b.qty;
+        totalRevenue += b.paid || 0;
+        totalSold += b.qty || 1;
       }
     });
 
-    const occupancyRate = ((totalSold / 780) * 100).toFixed(1);
+    const occupancy = ((totalSold / 780) * 100).toFixed(1) + '%';
 
     return sendJSON(res, 200, {
       success: true,
       metrics: {
         gboc: `₹${totalRevenue.toLocaleString('en-IN')}`,
-        occupancy: `${occupancyRate}%`,
         ticketsSold: `${totalSold} / 780`,
-        fbSales: `₹${concessionsSales.toLocaleString('en-IN')}`
+        occupancy: occupancy,
+        fbSales: '₹34,250'
       },
-      auditLogs: gateAuditLogs.slice(0, 10)
+      recentLogs: gateAuditLogs.slice(0, 10)
     });
   }
 
-  // ================= STATIC FILE SERVER (frontend/...) =================
+  // 10. Razorpay Payment Gateway Endpoints
+  if (method === 'POST' && pathname === '/api/payment/create-order') {
+    const body = await parseBody(req);
+    const amountInRupees = parseFloat(body.amount || '348.84');
+    const amountInPaise = Math.round(amountInRupees * 100);
+    const orderId = `order_RP_IND_${Math.floor(100000 + Math.random() * 900000)}`;
+
+    return sendJSON(res, 200, {
+      success: true,
+      keyId: 'rzp_live_CineWaveIndia_2026',
+      orderId: orderId,
+      amount: amountInPaise,
+      currency: 'INR',
+      merchantName: 'CineWave Entertainment (Pan-India Booking Gateway)',
+      description: `Movie Tickets Reservation - ${body.movie || 'CineWave Premiere'}`
+    });
+  }
+
+  if (method === 'POST' && pathname === '/api/payment/verify') {
+    const body = await parseBody(req);
+    const { paymentId, orderId, method: payMethod } = body;
+
+    return sendJSON(res, 200, {
+      success: true,
+      verified: true,
+      paymentId: paymentId || `pay_RP_IND_${Math.floor(100000 + Math.random() * 900000)}`,
+      orderId: orderId || 'order_RP_IND_94821',
+      method: payMethod || 'UPI (Google Pay)',
+      timestamp: new Date().toISOString(),
+      message: 'Payment successfully verified via Razorpay 256-bit secure gateway.'
+    });
+  }
+
+  // ================= STATIC FILE SERVER (Frontend Assets) =================
   let filePath = path.join(FRONTEND_DIR, pathname === '/' ? 'index.html' : pathname);
-
-  // Security check: ensure path is within FRONTEND_DIR
-  if (!filePath.startsWith(FRONTEND_DIR)) {
-    res.writeHead(403);
-    res.end('Forbidden');
-    return;
+  
+  if (!fs.existsSync(filePath) && fs.existsSync(path.join(__dirname, '..', pathname === '/' ? 'index.html' : pathname))) {
+    filePath = path.join(__dirname, '..', pathname === '/' ? 'index.html' : pathname);
   }
 
-  // Check if file exists
-  if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-    const ext = path.extname(filePath).toLowerCase();
-    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-    res.writeHead(200, { 'Content-Type': contentType });
-    fs.createReadStream(filePath).pipe(res);
-  } else {
-    // Default fallback to frontend/index.html
-    const fallbackPath = path.join(FRONTEND_DIR, 'index.html');
-    if (fs.existsSync(fallbackPath)) {
-      res.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });
-      fs.createReadStream(fallbackPath).pipe(res);
+  const ext = path.extname(filePath).toLowerCase();
+  const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        const indexFallback = path.join(FRONTEND_DIR, 'index.html');
+        if (fs.existsSync(indexFallback)) {
+          res.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });
+          return res.end(fs.readFileSync(indexFallback));
+        }
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('404 Not Found');
+      } else {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end(`500 Server Error: ${err.code}`);
+      }
     } else {
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end('404 Not Found');
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(content);
     }
-  }
+  });
 });
 
 server.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`🎬 CineWave Entertainment Backend Server Running!`);
+  console.log('====================================================');
+  console.log('🎬 CineWave Entertainment Pan-India Backend Running!');
   console.log(`🌐 Application URL: http://localhost:${PORT}`);
   console.log(`📡 REST API Base:   http://localhost:${PORT}/api/`);
   console.log(`📁 Serving Frontend: ${FRONTEND_DIR}`);
-  console.log(`====================================================`);
+  console.log('====================================================');
 });

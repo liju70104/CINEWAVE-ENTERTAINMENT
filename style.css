@@ -139,6 +139,47 @@ body.bms-theme {
   box-shadow: var(--shadow-card) !important;
 }
 
+/* ================= CINEWAVE BRAND LOGO ================= */
+.cw-logo {
+  display: flex;
+  align-items: baseline;
+  user-select: none;
+  cursor: pointer;
+  gap: 0.15rem;
+  font-family: var(--font-mono);
+  position: relative;
+}
+
+.cw-logo-cine {
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+.cw-logo-wave {
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--bms-primary) 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.cw-logo-badge {
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--accent-amber);
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  align-self: center;
+}
+
 /* ================= AUTH / LOGIN OVERLAY SCREEN ================= */
 .login-overlay {
   position: fixed;
@@ -309,20 +350,6 @@ body.bms-theme {
   gap: 1.5rem;
   flex: 1;
 }
-
-.bms-logo {
-  font-size: 1.45rem;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  display: flex;
-  align-items: baseline;
-  user-select: none;
-  cursor: pointer;
-}
-
-.bms-logo-book { color: var(--text-primary); }
-.bms-logo-my { color: var(--text-primary); font-size: 1.1rem; }
-.bms-logo-show { color: var(--bms-primary); font-size: 1.6rem; font-weight: 900; }
 
 .bms-search-bar {
   display: flex;
@@ -1813,11 +1840,12 @@ input:focus, select:focus {
 
 .bms-tkt-logo {
   font-weight: 900;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   letter-spacing: -0.5px;
+  font-family: var(--font-mono);
 }
 
-.bms-tkt-logo span { font-size: 0.9rem; }
+.bms-tkt-logo span { color: #93c5fd; }
 
 .tkt-badge-city {
   font-size: 0.7rem;
@@ -2210,7 +2238,7 @@ input:focus, select:focus {
 
 .app-modal-dialog {
   border-radius: var(--radius-lg);
-  max-width: 540px;
+  max-width: 580px;
   width: 100%;
   overflow: hidden;
   animation: slideUp 0.25s ease;
@@ -2279,19 +2307,47 @@ input:focus, select:focus {
   color: #93c5fd;
 }
 
-/* City Modal Grid */
+/* Pan-India City Modal Grid */
+.city-search-box {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bms-navy);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.85rem;
+}
+
+.city-search-box svg {
+  color: var(--text-muted);
+  width: 16px;
+  height: 16px;
+}
+
+.city-search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  width: 100%;
+  font-size: 0.85rem;
+}
+
 .city-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 0.75rem;
-  margin-top: 1rem;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
 }
 
 .city-card {
   background: var(--bms-navy);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 0.85rem;
+  padding: 0.85rem 0.6rem;
   text-align: center;
   cursor: pointer;
   transition: var(--transition);
@@ -2304,10 +2360,10 @@ input:focus, select:focus {
 }
 
 .city-card svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   color: var(--bms-primary);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.25rem;
 }
 
 .city-card strong {

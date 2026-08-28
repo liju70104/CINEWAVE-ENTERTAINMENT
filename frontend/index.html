@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BookMyShow Dindigul | Movie Ticket Booking Management</title>
+  <title>CineWave Entertainment | Pan-India Movie Ticket Booking</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -20,17 +20,17 @@
   <div class="login-overlay" id="login-modal">
     <div class="login-card">
       <div class="login-brand">
-        <div class="bms-logo">
-          <span class="bms-logo-book">book</span>
-          <span class="bms-logo-my">my</span>
-          <span class="bms-logo-show">show</span>
+        <div class="cw-logo">
+          <span class="cw-logo-cine">Cine</span>
+          <span class="cw-logo-wave">Wave</span>
+          <span class="cw-logo-badge">ENTERTAINMENT</span>
         </div>
-        <span class="login-loc-tag"><i data-lucide="map-pin"></i> Dindigul Cinemas</span>
+        <span class="login-loc-tag" id="auth-loc-tag"><i data-lucide="map-pin"></i> Pan-India Cinemas</span>
       </div>
 
       <div class="login-intro">
-        <h2 id="auth-title">Sign In to Your Account</h2>
-        <p id="auth-sub">Enter your credentials to book movie tickets, view M-Tickets, and unlock member discounts.</p>
+        <h2 id="auth-title">Sign In to CineWave</h2>
+        <p id="auth-sub">Enter your credentials to book movie tickets across India, view digital passes, and claim member discounts.</p>
       </div>
 
       <!-- Sign In / Register Mode Switcher -->
@@ -71,9 +71,9 @@
         <div class="form-group">
           <label>Membership Tier</label>
           <select id="login-role">
-            <option value="Platinum VIP Member">BMS Platinum VIP Member (20% Discount)</option>
-            <option value="Gold Superstar">BMS Gold Superstar (10% Discount)</option>
-            <option value="Silver Member">BMS Silver Member (5% Discount)</option>
+            <option value="Platinum VIP Member">CineWave Platinum VIP Member (20% Discount)</option>
+            <option value="Gold Superstar">CineWave Gold Superstar (10% Discount)</option>
+            <option value="Silver Member">CineWave Silver Member (5% Discount)</option>
             <option value="Standard Customer">Standard Account (No Discount)</option>
           </select>
         </div>
@@ -93,14 +93,14 @@
     </div>
   </div>
 
-  <!-- BookMyShow Top Navigation Bar -->
+  <!-- CineWave Top Navigation Bar -->
   <header class="bms-header">
     <div class="bms-header-inner">
       <div class="bms-brand-zone">
-        <div class="bms-logo" id="header-logo-btn">
-          <span class="bms-logo-book">book</span>
-          <span class="bms-logo-my">my</span>
-          <span class="bms-logo-show">show</span>
+        <div class="cw-logo" id="header-logo-btn">
+          <span class="cw-logo-cine">Cine</span>
+          <span class="cw-logo-wave">Wave</span>
+          <span class="cw-logo-badge">ENTERTAINMENT</span>
         </div>
         <div class="bms-search-bar">
           <i data-lucide="search"></i>
@@ -119,10 +119,10 @@
           </button>
         </div>
 
-        <!-- City Selector Button (Opens City Modal) -->
+        <!-- City Selector Button (Opens Pan-India City Modal) -->
         <div class="bms-location-badge" id="btn-city-picker">
           <i data-lucide="map-pin"></i>
-          <span class="city-name" id="current-city">Dindigul</span>
+          <span class="city-name" id="current-city">Mumbai</span>
           <i data-lucide="chevron-down" class="chev-icon"></i>
         </div>
 
@@ -163,7 +163,7 @@
           </button>
         </div>
         <div class="nav-links-right">
-          <span class="case-chip">Order Ref: <strong id="case-id-display">BMS-DGL-9281</strong></span>
+          <span class="case-chip">Order Ref: <strong id="case-id-display">CW-MUM-9281</strong></span>
         </div>
       </div>
     </nav>
@@ -237,27 +237,27 @@
           <!-- Movie Banner -->
           <div class="dgl-header-banner">
             <div class="dgl-badge-row">
-              <span class="city-pill"><i data-lucide="map-pin"></i> <span id="banner-city-label">In Cinemas in Dindigul</span></span>
-              <span class="story-tag"><i data-lucide="sparkles"></i> Trending Tamil & Blockbuster Releases</span>
+              <span class="city-pill"><i data-lucide="map-pin"></i> <span id="banner-city-label">In Cinemas in Mumbai</span></span>
+              <span class="story-tag"><i data-lucide="sparkles"></i> Trending Pan-India Blockbusters & IMAX Laser</span>
             </div>
-            <h2>Now Showing in Cinema Halls</h2>
-            <p>Select your movie, theatre screen, daily showtime slot, and preferred auditorium seats.</p>
+            <h2>Now Showing in Multiplexes Across India</h2>
+            <p>Select your movie, local cinema screen, daily showtime slot, and preferred auditorium seats.</p>
           </div>
 
           <!-- Quick Genre Filter Pills -->
           <div class="genre-filters-row">
             <button type="button" class="genre-pill active" data-genre="all">🎬 All Movies</button>
             <button type="button" class="genre-pill" data-genre="Action">🔥 Action / Thriller</button>
-            <button type="button" class="genre-pill" data-genre="Tamil">🌟 Tamil Blockbusters</button>
+            <button type="button" class="genre-pill" data-genre="Tamil">🌟 South & Hindi Hits</button>
             <button type="button" class="genre-pill" data-genre="Sci-Fi">🚀 Sci-Fi / Adventure</button>
-            <button type="button" class="genre-pill" data-genre="Laser">✨ 4K Laser & Atmos</button>
+            <button type="button" class="genre-pill" data-genre="Laser">✨ 4K Laser & IMAX</button>
           </div>
 
           <!-- Movie Cards Grid -->
           <div class="bms-movie-grid" id="main-movie-grid">
             
             <!-- Movie 1: Amaran -->
-            <div class="movie-card selected" data-movie-id="MOV-DGL-01" data-title="Amaran" data-genre="Action / Biography / Drama" data-lang="Tamil (2D, Dolby Atmos)" data-rating="9.4" data-votes="128.4K" data-img="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60" data-trailer="https://www.youtube.com/embed/dQw4w9WgXcQ" data-synopsis="The heroic life and supreme sacrifice of Major Mukund Varadarajan of the Rajput Regiment, who led the anti-terror operation in Shopian, Kashmir. A high-octane emotional action drama featuring Sivakarthikeyan and Sai Pallavi.">
+            <div class="movie-card selected" data-movie-id="MOV-DGL-01" data-title="Amaran" data-genre="Action / Biography / Drama" data-lang="Tamil, Hindi, Telugu (2D, Dolby Atmos)" data-rating="9.4" data-votes="128.4K" data-img="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60" data-trailer="https://www.youtube.com/embed/dQw4w9WgXcQ" data-synopsis="The heroic life and supreme sacrifice of Major Mukund Varadarajan of the Rajput Regiment, who led the anti-terror operation in Shopian, Kashmir. A high-octane emotional action drama featuring Sivakarthikeyan and Sai Pallavi.">
               <div class="movie-poster-wrap">
                 <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=60" alt="Amaran" class="movie-img"/>
                 <div class="rating-strip"><i data-lucide="star"></i> 9.4/10 <span>(128K Votes)</span></div>
@@ -265,7 +265,7 @@
               </div>
               <div class="movie-card-body">
                 <h4 class="movie-name">Amaran</h4>
-                <span class="movie-meta">Tamil • Action / Biography</span>
+                <span class="movie-meta">Pan-India • Action / Biography</span>
                 <div class="movie-card-actions">
                   <button type="button" class="btn-card-trailer btn-open-trailer-modal" data-movie-id="MOV-DGL-01">
                     <i data-lucide="play-circle"></i> Trailer & Info
@@ -275,7 +275,7 @@
             </div>
 
             <!-- Movie 2: GOAT -->
-            <div class="movie-card" data-movie-id="MOV-DGL-02" data-title="The Greatest of All Time (GOAT)" data-genre="Action / Sci-Fi / Thriller" data-lang="Tamil, Telugu" data-rating="8.9" data-votes="95.2K" data-img="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=60" data-trailer="https://www.youtube.com/embed/dQw4w9WgXcQ" data-synopsis="A retired elite Special Anti-Terrorist Squad operative is drawn back into a high-stakes conspiracy across Thailand and Moscow when a rogue adversary from his past threatens his family. Starring Thalapathy Vijay in dual roles.">
+            <div class="movie-card" data-movie-id="MOV-DGL-02" data-title="The Greatest of All Time (GOAT)" data-genre="Action / Sci-Fi / Thriller" data-lang="Tamil, Hindi, Telugu" data-rating="8.9" data-votes="95.2K" data-img="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=60" data-trailer="https://www.youtube.com/embed/dQw4w9WgXcQ" data-synopsis="A retired elite Special Anti-Terrorist Squad operative is drawn back into a high-stakes conspiracy across Thailand and Moscow when a rogue adversary from his past threatens his family. Starring Thalapathy Vijay in dual roles.">
               <div class="movie-poster-wrap">
                 <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=60" alt="GOAT" class="movie-img"/>
                 <div class="rating-strip"><i data-lucide="star"></i> 8.9/10 <span>(95K Votes)</span></div>
@@ -283,7 +283,7 @@
               </div>
               <div class="movie-card-body">
                 <h4 class="movie-name">The Greatest Of All Time</h4>
-                <span class="movie-meta">Tamil • Sci-Fi Action</span>
+                <span class="movie-meta">Tamil / Hindi • Sci-Fi Action</span>
                 <div class="movie-card-actions">
                   <button type="button" class="btn-card-trailer btn-open-trailer-modal" data-movie-id="MOV-DGL-02">
                     <i data-lucide="play-circle"></i> Trailer & Info
@@ -293,7 +293,7 @@
             </div>
 
             <!-- Movie 3: Vettaiyan -->
-            <div class="movie-card" data-movie-id="MOV-DGL-03" data-title="Vettaiyan" data-genre="Action / Police Drama" data-lang="Tamil (Dolby 7.1)" data-rating="8.6" data-votes="81.6K" data-img="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&auto=format&fit=crop&q=60" data-trailer="https://www.youtube.com/embed/dQw4w9WgXcQ" data-synopsis="A fearless encounter specialist IPS officer takes on corruption and crime cartels while confronting the moral questions of judicial encounters and systemic justice. Starring Superstar Rajinikanth and Amitabh Bachchan.">
+            <div class="movie-card" data-movie-id="MOV-DGL-03" data-title="Vettaiyan" data-genre="Action / Police Drama" data-lang="Tamil, Hindi, Telugu (Dolby Atmos)" data-rating="8.6" data-votes="81.6K" data-img="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&auto=format&fit=crop&q=60" data-trailer="https://www.youtube.com/embed/dQw4w9WgXcQ" data-synopsis="A fearless encounter specialist IPS officer takes on corruption and crime cartels while confronting the moral questions of judicial encounters and systemic justice. Starring Superstar Rajinikanth and Amitabh Bachchan.">
               <div class="movie-poster-wrap">
                 <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&auto=format&fit=crop&q=60" alt="Vettaiyan" class="movie-img"/>
                 <div class="rating-strip"><i data-lucide="star"></i> 8.6/10 <span>(81K Votes)</span></div>
@@ -301,7 +301,7 @@
               </div>
               <div class="movie-card-body">
                 <h4 class="movie-name">Vettaiyan</h4>
-                <span class="movie-meta">Tamil • Action Police Drama</span>
+                <span class="movie-meta">Pan-India • Action Police Drama</span>
                 <div class="movie-card-actions">
                   <button type="button" class="btn-card-trailer btn-open-trailer-modal" data-movie-id="MOV-DGL-03">
                     <i data-lucide="play-circle"></i> Trailer & Info
@@ -311,15 +311,15 @@
             </div>
 
             <!-- Movie 4: Interstellar -->
-            <div class="movie-card" data-movie-id="MOV-DGL-04" data-title="Interstellar (Re-Release 4K)" data-genre="Sci-Fi / Adventure" data-lang="English (4K RGB Laser)" data-rating="9.6" data-votes="240K" data-img="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&auto=format&fit=crop&q=60" data-trailer="https://www.youtube.com/embed/zSWdZVtXT7E" data-synopsis="When Earth becomes uninhabitable in the future, a former NASA pilot and team of researchers travel through a wormhole across the galaxy in an attempt to find a new home for humanity. Directed by Christopher Nolan.">
+            <div class="movie-card" data-movie-id="MOV-DGL-04" data-title="Interstellar (Re-Release 4K)" data-genre="Sci-Fi / Adventure" data-lang="English, Hindi (4K Laser IMAX)" data-rating="9.6" data-votes="240K" data-img="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&auto=format&fit=crop&q=60" data-trailer="https://www.youtube.com/embed/zSWdZVtXT7E" data-synopsis="When Earth becomes uninhabitable in the future, a former NASA pilot and team of researchers travel through a wormhole across the galaxy in an attempt to find a new home for humanity. Directed by Christopher Nolan.">
               <div class="movie-poster-wrap">
                 <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&auto=format&fit=crop&q=60" alt="Interstellar" class="movie-img"/>
                 <div class="rating-strip"><i data-lucide="star"></i> 9.6/10 <span>(240K Votes)</span></div>
                 <span class="cert-tag">UA</span>
               </div>
               <div class="movie-card-body">
-                <h4 class="movie-name">Interstellar (4K Laser)</h4>
-                <span class="movie-meta">English • Sci-Fi Masterpiece</span>
+                <h4 class="movie-name">Interstellar (4K Laser IMAX)</h4>
+                <span class="movie-meta">English / IMAX • Sci-Fi Masterpiece</span>
                 <div class="movie-card-actions">
                   <button type="button" class="btn-card-trailer btn-open-trailer-modal" data-movie-id="MOV-DGL-04">
                     <i data-lucide="play-circle"></i> Trailer & Info
@@ -352,12 +352,12 @@
               </div>
               <div class="grid-2">
                 <div class="form-group">
-                  <label>BookMyShow Rewards Tier</label>
+                  <label>CineWave Rewards Tier</label>
                   <select id="cust-tier">
                     <option value="Regular">Regular (Standard Pricing)</option>
-                    <option value="Silver">BMS Silver (5% Discount)</option>
-                    <option value="Gold">BMS Gold Superstar (10% Discount)</option>
-                    <option value="Platinum" selected>BMS Platinum VIP (20% Discount + Priority Lounge)</option>
+                    <option value="Silver">CineWave Silver (5% Discount)</option>
+                    <option value="Gold">CineWave Gold Superstar (10% Discount)</option>
+                    <option value="Platinum" selected>CineWave Platinum VIP (20% Discount + Priority Lounge)</option>
                   </select>
                 </div>
                 <div class="form-group">
@@ -374,11 +374,7 @@
                 <div class="form-group">
                   <label>Select Cinema Screen <span class="req">*</span></label>
                   <select id="theatre-select" required>
-                    <option value="TH-DGL-01" data-loc="Canara Colony, Dindigul">Umaa Rajendra Cinemas 4K RGB Laser Dolby Atmos, Dindigul</option>
-                    <option value="TH-DGL-02" data-loc="Aarthi Road, Dindigul">Aarthi Grand Cineplex A/C 2K Dolby, Dindigul</option>
-                    <option value="TH-DGL-03" data-loc="Natham Road, Dindigul">Vijay Theatre Barco 4K Dolby 7.1, Dindigul</option>
-                    <option value="TH-DGL-04" data-loc="Chinnalapatti, Dindigul">J Cinemas 4K Dolby Atmos, Chinnalapatti</option>
-                    <option value="TH-DGL-05" data-loc="Palani Road, Dindigul">Carnival Rajendra Screen 2, Dindigul</option>
+                    <!-- Populated dynamically based on chosen city -->
                   </select>
                 </div>
                 <div class="form-group">
@@ -388,6 +384,7 @@
                     <option value="Dolby Atmos 4K" data-base="190" selected>4K RGB Laser Dolby Atmos (₹190)</option>
                     <option value="VIP Premiere" data-base="250">VIP Balcony & Recliner Lounge (₹250)</option>
                     <option value="3D Atmos" data-base="200">RealD 3D Dolby Atmos (₹200)</option>
+                    <option value="IMAX Laser" data-base="320">IMAX 4K Laser with 12-Ch Audio (₹320)</option>
                   </select>
                 </div>
               </div>
@@ -425,7 +422,7 @@
             <div class="form-section">
               <div class="flex-between">
                 <h4 class="section-title"><i data-lucide="armchair"></i> Select Seating Category & Seats</h4>
-                <span class="live-inventory" id="live-inventory-tag">Available Seats: <strong>52 / 60</strong></span>
+                <span class="live-inventory" id="live-inventory-tag">Available Seats: <strong>54 / 60</strong></span>
               </div>
               
               <div class="grid-2">
@@ -496,7 +493,7 @@
               <i data-lucide="check-circle-2"></i>
               <div>
                 <strong>Auditorium Capacity Verified:</strong>
-                <p id="calc-avail-text">Requested 2 tickets verified against 52 available seats in Umaa Rajendra Cinemas Screen 1.</p>
+                <p id="calc-avail-text">Requested 2 tickets verified against available seats.</p>
               </div>
             </div>
           </div>
@@ -561,7 +558,7 @@
 
             <div class="fare-item discount" id="discount-row">
               <div class="fare-label">
-                <strong class="text-green"><i data-lucide="tag"></i> BMS Loyalty Reward (<span id="calc-tier-name">Platinum VIP 20%</span>)</strong>
+                <strong class="text-green"><i data-lucide="tag"></i> CineWave Loyalty Reward (<span id="calc-tier-name">Platinum VIP 20%</span>)</strong>
                 <span>Member discount applied</span>
               </div>
               <span class="fare-val text-green" id="calc-discount">-₹76.00</span>
@@ -689,14 +686,14 @@
                 </div>
               </div>
 
-              <div class="snack-card" data-item-id="snack-04" data-price="120" data-name="Dindigul Special Cold Coffee">
+              <div class="snack-card" data-item-id="snack-04" data-price="120" data-name="CineWave Special Cold Coffee">
                 <div class="snack-img-wrap">
                   <img src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=300&auto=format&fit=crop&q=60" alt="Coffee" class="snack-img"/>
                   <span class="snack-tag veg">Beverage</span>
                 </div>
                 <div class="snack-info">
-                  <h4>Dindigul Iced Cold Coffee</h4>
-                  <p>Rich brewed South Indian filter blend topped with vanilla cream.</p>
+                  <h4>CineWave Iced Cold Coffee</h4>
+                  <p>Rich brewed filter coffee blend topped with smooth vanilla cream.</p>
                   <div class="snack-footer">
                     <span class="snack-price">₹120</span>
                     <div class="qty-counter">
@@ -767,7 +764,7 @@
             <div class="review-block">
               <h4><i data-lucide="film"></i> Movie & Cinema Details</h4>
               <p><strong>Movie:</strong> <span id="rev-movie">Amaran</span></p>
-              <p><strong>Cinema:</strong> <span id="rev-theatre">Umaa Rajendra Cinemas, Dindigul</span></p>
+              <p><strong>Cinema:</strong> <span id="rev-theatre">PVR INOX Palladium & IMAX, Mumbai</span></p>
               <p><strong>Date & Showtime:</strong> <span id="rev-datetime">Today at 06:30 PM</span></p>
               <p><strong>Format:</strong> <span id="rev-type">4K RGB Laser Dolby Atmos</span></p>
               <p><strong>Seats Booked:</strong> <span id="rev-seats" class="accent-seat">E5, E6 (2 Tickets)</span></p>
@@ -786,7 +783,7 @@
           <div class="terms-group">
             <label class="checkbox-label">
               <input type="checkbox" id="chk-policy" checked />
-              <span>I acknowledge the BookMyShow cinema terms & agree to receive SMS/WhatsApp M-Ticket updates.</span>
+              <span>I acknowledge the CineWave Entertainment cinema terms & agree to receive SMS/WhatsApp M-Ticket updates.</span>
             </label>
           </div>
 
@@ -811,22 +808,22 @@
             <span class="badge badge-green"><i data-lucide="check-circle-2"></i> Booking Confirmed</span>
           </div>
 
-          <!-- Digital BookMyShow M-Ticket -->
+          <!-- Digital CineWave M-Ticket -->
           <div class="bms-m-ticket" id="ticket-pass-element">
             <div class="ticket-top-banner">
-              <div class="bms-tkt-logo">book<span>my</span>show</div>
-              <span class="tkt-badge-city" id="tkt-city-badge">DINDIGUL MULTIPLEX</span>
+              <div class="bms-tkt-logo">Cine<span>Wave</span> ENTERTAINMENT</div>
+              <span class="tkt-badge-city" id="tkt-city-badge">MUMBAI MULTIPLEX</span>
             </div>
 
             <div class="ticket-body">
               <div class="tkt-info-left">
                 <h1 class="tkt-movie-title" id="tkt-movie">Amaran</h1>
-                <span class="tkt-lang-badge" id="tkt-type">TAMIL • 4K RGB LASER DOLBY ATMOS</span>
+                <span class="tkt-lang-badge" id="tkt-type">PAN-INDIA • 4K RGB LASER DOLBY ATMOS</span>
                 
                 <div class="tkt-grid-details">
                   <div class="tkt-field">
                     <span class="field-lbl">CINEMA THEATRE</span>
-                    <span class="field-val" id="tkt-theatre">Umaa Rajendra Cinemas, Dindigul</span>
+                    <span class="field-val" id="tkt-theatre">PVR INOX Palladium & IMAX, Mumbai</span>
                   </div>
                   <div class="tkt-field">
                     <span class="field-lbl">DATE & TIME</span>
@@ -844,13 +841,13 @@
 
                 <div class="tkt-total-strip">
                   <span>TOTAL AMOUNT PAID: <strong id="tkt-price">₹348.84</strong></span>
-                  <span class="bms-verified"><i data-lucide="shield-check"></i> BMS CONFIRMED</span>
+                  <span class="bms-verified"><i data-lucide="shield-check"></i> CINEWAVE VERIFIED</span>
                 </div>
 
                 <!-- Razorpay Verified Stamp -->
                 <div class="razorpay-verified-stamp" id="tkt-rzp-stamp">
                   <i data-lucide="check-circle"></i>
-                  <span>Paid securely via Razorpay (Payment Ref: <strong id="tkt-rzp-id">pay_RP_DGL_94821</strong>)</span>
+                  <span>Paid securely via Razorpay (Payment Ref: <strong id="tkt-rzp-id">pay_RP_IND_94821</strong>)</span>
                 </div>
               </div>
 
@@ -858,7 +855,7 @@
                 <div class="qr-box">
                   <i data-lucide="qr-code"></i>
                 </div>
-                <span class="tkt-code" id="tkt-ref-code">BMS-DGL-89421</span>
+                <span class="tkt-code" id="tkt-ref-code">CW-MUM-89421</span>
                 <span class="scan-label">Scan at Cinema Entrance</span>
               </div>
             </div>
@@ -874,9 +871,9 @@
               </div>
             </div>
             <div class="email-body-snippet">
-              <p><strong>Subject:</strong> Your BookMyShow M-Ticket is Confirmed! (Booking Ref: <span id="email-ref-id">BMS-DGL-89421</span>)</p>
+              <p><strong>Subject:</strong> Your CineWave Entertainment M-Ticket is Confirmed! (Booking Ref: <span id="email-ref-id">CW-MUM-89421</span>)</p>
               <p>Dear <strong id="email-cust-name">Customer</strong>,</p>
-              <p>Thank you for booking with BookMyShow! Your movie tickets for <strong id="email-movie-name">Amaran</strong> at <strong id="email-theatre-name">Umaa Rajendra Cinemas</strong> have been booked and paid successfully via Razorpay.</p>
+              <p>Thank you for booking with CineWave Entertainment! Your movie tickets for <strong id="email-movie-name">Amaran</strong> at <strong id="email-theatre-name">PVR INOX Palladium</strong> have been booked and paid successfully via Razorpay.</p>
               <p>Please show this digital M-Ticket or Booking Ref ID at the cinema entrance kiosk for direct admission.</p>
             </div>
           </div>
@@ -932,7 +929,7 @@
           <div class="head-info">
             <span class="step-num">Customer Ticket Wallet</span>
             <h2>My Cinema Bookings & M-Tickets</h2>
-            <p>Manage upcoming shows, view digital QR turnstile passes, reschedule showtimes, or request instant refunds.</p>
+            <p>Manage upcoming shows across India, view digital QR turnstile passes, reschedule showtimes, or request instant refunds.</p>
           </div>
           <button type="button" class="btn btn-bms" id="btn-wallet-new-booking">
             <i data-lucide="plus"></i> Book New Show
@@ -953,7 +950,7 @@
           <div class="head-info">
             <span class="step-num">Cinema Concessions Menu</span>
             <h2>CineWave Snacks & Gourmet Popcorn Bar</h2>
-            <p>Freshly popped snacks, hot appetizers, and refreshing beverages for cinema screens.</p>
+            <p>Freshly popped snacks, hot appetizers, and refreshing beverages for cinema screens nationwide.</p>
           </div>
           <span class="badge badge-orange"><i data-lucide="sparkles"></i> 100% Fresh & Hygenic</span>
         </div>
@@ -1041,7 +1038,7 @@
             <div class="form-group" style="margin-top: 1rem;">
               <label>Simulate Scanner Input (Booking Reference ID):</label>
               <div class="promo-input-group">
-                <input type="text" id="scan-input-ref" value="BMS-DGL-9281" />
+                <input type="text" id="scan-input-ref" value="CW-MUM-9281" />
                 <button type="button" class="btn btn-bms" id="btn-trigger-scan">
                   <i data-lucide="scan"></i> Scan Ticket
                 </button>
@@ -1050,10 +1047,10 @@
 
             <div class="promo-pills-row">
               <span class="preset-title" style="width: 100%;">Sample Valid & Invalid Passes:</span>
-              <span class="quick-promo-pill" data-scan="BMS-DGL-9281">⚡ BMS-DGL-9281 (Amaran - Valid)</span>
-              <span class="quick-promo-pill" data-scan="BMS-DGL-7714">⚡ BMS-DGL-7714 (GOAT - Valid)</span>
-              <span class="quick-promo-pill" data-scan="BMS-DGL-4520">⚡ BMS-DGL-4520 (Vettaiyan - Scanned)</span>
-              <span class="quick-promo-pill" data-scan="BMS-DGL-9999">⚡ BMS-DGL-9999 (Invalid/Refunded)</span>
+              <span class="quick-promo-pill" data-scan="CW-MUM-9281">⚡ CW-MUM-9281 (Amaran - Valid)</span>
+              <span class="quick-promo-pill" data-scan="CW-BLR-7714">⚡ CW-BLR-7714 (GOAT - Valid)</span>
+              <span class="quick-promo-pill" data-scan="CW-CHN-4520">⚡ CW-CHN-4520 (Vettaiyan - Scanned)</span>
+              <span class="quick-promo-pill" data-scan="CW-IND-9999">⚡ CW-IND-9999 (Invalid/Refunded)</span>
             </div>
           </div>
 
@@ -1081,9 +1078,9 @@
                 Recent Gate Entry Logs (Cinema Gate 1)
               </h5>
               <div style="background: var(--bms-navy); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.78rem; font-family: var(--font-mono); line-height: 1.7;" id="gate-audit-log">
-                <div>[06:12:45 PM] BMS-DGL-4520 &bull; Admit 1 (Seat D4) &bull; Gate Turnstile A &bull; OK</div>
-                <div>[06:05:10 PM] BMS-DGL-3112 &bull; Admit 4 (Seats B1-B4) &bull; Gate Turnstile B &bull; OK</div>
-                <div>[05:58:22 PM] BMS-DGL-1090 &bull; Admit 2 (Seats F1, F2) &bull; Gate Turnstile A &bull; OK</div>
+                <div>[06:12:45 PM] CW-MUM-4520 &bull; Admit 1 (Seat D4) &bull; Gate Turnstile A &bull; OK</div>
+                <div>[06:05:10 PM] CW-BLR-3112 &bull; Admit 4 (Seats B1-B4) &bull; Gate Turnstile B &bull; OK</div>
+                <div>[05:58:22 PM] CW-CHN-1090 &bull; Admit 2 (Seats F1, F2) &bull; Gate Turnstile A &bull; OK</div>
               </div>
             </div>
           </div>
@@ -1110,7 +1107,7 @@
           <div class="rzp-logo-badge">Razorpay</div>
           <div class="rzp-merchant-info">
             <h4>CineWave Entertainment</h4>
-            <p id="rzp-order-ref">Order: order_RP_DGL_94821</p>
+            <p id="rzp-order-ref">Order: order_RP_IND_94821</p>
           </div>
         </div>
         <div class="rzp-amount-col">
@@ -1307,7 +1304,7 @@
 
         <div style="background: var(--bms-navy); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.78rem;">
           <strong><i data-lucide="sparkles" style="width: 14px; height: 14px; color: var(--accent-amber);"></i> Premium Formats:</strong>
-          <p style="color: var(--text-secondary); margin-top: 0.2rem;">Available in 4K RGB Laser, Dolby Atmos 7.1 Surround, and VIP Recliner Suite.</p>
+          <p style="color: var(--text-secondary); margin-top: 0.2rem;">Available in IMAX 4K Laser, Dolby Atmos 7.1 Surround, and VIP Recliner Suite.</p>
         </div>
       </div>
       <div class="modal-foot">
@@ -1319,47 +1316,96 @@
     </div>
   </div>
 
-  <!-- ================= MODAL: CITY SELECTOR ================= -->
+  <!-- ================= MODAL: PAN-INDIA CITY SELECTOR ================= -->
   <div class="app-modal-overlay hidden" id="city-modal">
     <div class="app-modal-dialog">
       <div class="modal-head">
-        <h3><i data-lucide="map-pin" style="color: var(--bms-primary);"></i> Select Your City</h3>
+        <h3><i data-lucide="map-pin" style="color: var(--bms-primary);"></i> Select Cinema Location (Pan-India)</h3>
         <button type="button" class="btn-close-modal" id="btn-close-city-modal"><i data-lucide="x"></i></button>
       </div>
       <div class="modal-body">
-        <p style="font-size: 0.85rem; color: var(--text-secondary);">
-          Choose your city to view local multiplexes, real-time showtimes, and ticket availability:
+        
+        <!-- Search bar inside City Modal -->
+        <div class="city-search-box">
+          <i data-lucide="search"></i>
+          <input type="text" id="city-search-input" />
+        </div>
+
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+          Choose your city to view local multiplexes, IMAX screens, and real-time seat availability:
         </p>
-        <div class="city-grid">
-          <div class="city-card active" data-city="Dindigul">
+
+        <div class="city-grid" id="city-list-grid">
+          <!-- Popular Indian Metros & Cities -->
+          <div class="city-card active" data-city="Mumbai" data-state="Maharashtra">
             <i data-lucide="map-pin"></i>
-            <strong>Dindigul</strong>
-            <small>5 Theatres</small>
+            <strong>Mumbai</strong>
+            <small>Maharashtra &bull; 8 Screens</small>
           </div>
-          <div class="city-card" data-city="Madurai">
+          <div class="city-card" data-city="Delhi-NCR" data-state="Delhi">
             <i data-lucide="map-pin"></i>
-            <strong>Madurai</strong>
-            <small>8 Theatres</small>
+            <strong>Delhi-NCR</strong>
+            <small>Capital Region &bull; 12 Screens</small>
           </div>
-          <div class="city-card" data-city="Chennai">
+          <div class="city-card" data-city="Bengaluru" data-state="Karnataka">
+            <i data-lucide="map-pin"></i>
+            <strong>Bengaluru</strong>
+            <small>Karnataka &bull; 10 Screens</small>
+          </div>
+          <div class="city-card" data-city="Hyderabad" data-state="Telangana">
+            <i data-lucide="map-pin"></i>
+            <strong>Hyderabad</strong>
+            <small>Telangana &bull; 9 Screens</small>
+          </div>
+          <div class="city-card" data-city="Chennai" data-state="Tamil Nadu">
             <i data-lucide="map-pin"></i>
             <strong>Chennai</strong>
-            <small>24 Theatres</small>
+            <small>Tamil Nadu &bull; 11 Screens</small>
           </div>
-          <div class="city-card" data-city="Coimbatore">
+          <div class="city-card" data-city="Kochi" data-state="Kerala">
+            <i data-lucide="map-pin"></i>
+            <strong>Kochi</strong>
+            <small>Kerala &bull; 7 Screens</small>
+          </div>
+          <div class="city-card" data-city="Kolkata" data-state="West Bengal">
+            <i data-lucide="map-pin"></i>
+            <strong>Kolkata</strong>
+            <small>West Bengal &bull; 8 Screens</small>
+          </div>
+          <div class="city-card" data-city="Pune" data-state="Maharashtra">
+            <i data-lucide="map-pin"></i>
+            <strong>Pune</strong>
+            <small>Maharashtra &bull; 6 Screens</small>
+          </div>
+          <div class="city-card" data-city="Ahmedabad" data-state="Gujarat">
+            <i data-lucide="map-pin"></i>
+            <strong>Ahmedabad</strong>
+            <small>Gujarat &bull; 7 Screens</small>
+          </div>
+          <div class="city-card" data-city="Coimbatore" data-state="Tamil Nadu">
             <i data-lucide="map-pin"></i>
             <strong>Coimbatore</strong>
-            <small>12 Theatres</small>
+            <small>Tamil Nadu &bull; 6 Screens</small>
           </div>
-          <div class="city-card" data-city="Trichy">
+          <div class="city-card" data-city="Madurai" data-state="Tamil Nadu">
             <i data-lucide="map-pin"></i>
-            <strong>Trichy</strong>
-            <small>6 Theatres</small>
+            <strong>Madurai</strong>
+            <small>Tamil Nadu &bull; 5 Screens</small>
           </div>
-          <div class="city-card" data-city="Palani">
+          <div class="city-card" data-city="Dindigul" data-state="Tamil Nadu">
             <i data-lucide="map-pin"></i>
-            <strong>Palani</strong>
-            <small>3 Theatres</small>
+            <strong>Dindigul</strong>
+            <small>Tamil Nadu &bull; 4 Screens</small>
+          </div>
+          <div class="city-card" data-city="Jaipur" data-state="Rajasthan">
+            <i data-lucide="map-pin"></i>
+            <strong>Jaipur</strong>
+            <small>Rajasthan &bull; 5 Screens</small>
+          </div>
+          <div class="city-card" data-city="Chandigarh" data-state="Punjab/Haryana">
+            <i data-lucide="map-pin"></i>
+            <strong>Chandigarh</strong>
+            <small>Punjab &bull; 5 Screens</small>
           </div>
         </div>
       </div>
@@ -1374,13 +1420,13 @@
         <button type="button" class="btn-close-modal" id="btn-close-cancel-modal"><i data-lucide="x"></i></button>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to cancel booking <strong id="cancel-modal-ref" class="ticket-id-tag">BMS-DGL-9281</strong>?</p>
+        <p>Are you sure you want to cancel booking <strong id="cancel-modal-ref" class="ticket-id-tag">CW-MUM-9281</strong>?</p>
         
         <div class="audit-summary-box error" style="margin: 1rem 0;">
           <div class="validation-status-row">
             <i data-lucide="shield-alert"></i>
             <div>
-              <strong>Cinema SLA Policy:</strong>
+              <strong>CineWave Cinema SLA Policy:</strong>
               <p>Cancellations done > 2 hours prior to showtime are eligible for an <strong>80% refund</strong>. Reserved seats will immediately be recycled back into the public seating pool.</p>
             </div>
           </div>
@@ -1422,7 +1468,7 @@
         <button type="button" class="btn-close-modal" id="btn-close-reschedule-modal"><i data-lucide="x"></i></button>
       </div>
       <div class="modal-body">
-        <p>Rescheduling booking for <strong id="resched-movie-title">Amaran</strong> (<span id="resched-ref-id">BMS-DGL-9281</span>):</p>
+        <p>Rescheduling booking for <strong id="resched-movie-title">Amaran</strong> (<span id="resched-ref-id">CW-MUM-9281</span>):</p>
         
         <div class="form-group" style="margin-top: 1rem;">
           <label>Select New Show Date:</label>
@@ -1444,7 +1490,7 @@
             <i data-lucide="check-circle-2"></i>
             <div>
               <strong>Free Reschedule:</strong>
-              <p>No reschedule surcharge applies for BMS Platinum VIP members. Seats will be transferred automatically.</p>
+              <p>No reschedule surcharge applies for CineWave Platinum VIP members. Seats will be transferred automatically.</p>
             </div>
           </div>
         </div>
